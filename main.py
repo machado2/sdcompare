@@ -38,9 +38,9 @@ async def process_queue(queue: list[QueueItem]):
         if not exists_image(item.checkpoint.id, item.prompt.id):
             task = asyncio.create_task(create_insert_image(item, semaphore))
             tasks.append(task)
-        if len(tasks) >= 10:
-            await asyncio.gather(*tasks)
-            tasks = []
+        #if len(tasks) >= 10:
+        #    await asyncio.gather(*tasks)
+        #    tasks = []
     await asyncio.gather(*tasks)
 
 
@@ -75,7 +75,7 @@ def create_images():
 
 
 def main():
-    # create_things()
+    create_things()
     create_images()
 
 
