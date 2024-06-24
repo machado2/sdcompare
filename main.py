@@ -3,6 +3,7 @@ import asyncio
 from asyncio import Semaphore
 
 from app.aihorde_image_generator import AiHordeImageGenerator
+from app.api import app as api
 from app.db_operations import insert_image, exists_image, upsert_checkpoint, upsert_prompt, get_insert_category, \
     get_checkpoints, Checkpoint, Prompt, get_prompts
 from app.db_setup import create_db
@@ -38,7 +39,7 @@ async def process_queue(queue: list[QueueItem]):
         if not exists_image(item.checkpoint.id, item.prompt.id):
             task = asyncio.create_task(create_insert_image(item, semaphore))
             tasks.append(task)
-        #if len(tasks) >= 10:
+        # if len(tasks) >= 10:
         #    await asyncio.gather(*tasks)
         #    tasks = []
     await asyncio.gather(*tasks)
@@ -76,10 +77,15 @@ def create_images():
     asyncio.run(process_queue(queue))
 
 
+def serve_api():
+    api.run()
+
+
 def main():
     print("Starting")
     # create_things()
-    create_images()
+    # create_images()
+    serve_api()
 
 
 if __name__ == "__main__":

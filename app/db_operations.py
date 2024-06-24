@@ -1,11 +1,10 @@
-# src/db_operations.py
-
 import io
 from contextlib import closing
 
 import psycopg2
 from PIL import Image
 
+from app.data import Checkpoint, Category, Prompt
 from app.settings import DATABASE
 
 
@@ -125,13 +124,6 @@ def retrieve_image(checkpoint_name, prompt):
     return img
 
 
-class Checkpoint:
-    def __init__(self, id: int, model: str, workers: int = 1):
-        self.id = id
-        self.name = model
-        self.worker_count = workers
-
-
 def get_checkpoints() -> list[Checkpoint]:
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -145,17 +137,37 @@ def get_checkpoints() -> list[Checkpoint]:
     return checkpoints
 
 
-class Prompt:
-    def __init__(self, id: int, prompt: str, category_id: int):
-        self.id = id
-        self.prompt = prompt
-        self.category_id = category_id
+def get_prompts(category_id: int = None) -> list[Prompt]:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if category_id is not None:
+        cursor.execute('SELECT id, prompt, category_id FROM prompts WHERE category_id = %s', (category_id,))
+    else:
+        cursor.execute('SELECT id, prompt, category_id FROM prompts')
+
+    prompts = [Prompt(*row) for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+
+    return prompts
 
 
-def get_prompts() -> list[Prompt]:
+def get_categories() -> list[Category]:
     with closing(get_db_connection()) as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT id, prompt, category_id FROM prompts')
-        prompts = [Prompt(*row) for row in cursor.fetchall()]
+        cursor.execute('SELECT id, name FROM category')
+        categories = [Category(*row) for row in cursor.fetchall()]
         cursor.close()
-        return prompts
+        return categories
+
+
+def get_image(checkpoint_id, prompt_id) -> bytes:
+    with closing(get_db_connection()) as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT image FROM images WHERE checkpoint_id = %s AND prompt_id = %s',
+                       (checkpoint_id, prompt_id))
+        image_data = cursor.fetchone()
+        cursor.close()
+        return image_data[0] if image_data else None
