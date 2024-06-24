@@ -59,10 +59,11 @@ def create_things():
 
 
 def create_images():
+    print("loading checkpoints and prompts")
     checkpoints = get_checkpoints()
     prompts = get_prompts()
 
-    print("starting")
+    print("creating queue")
     queue = []
     # Generate and insert sample images into the database
     for checkpoint in checkpoints:
@@ -70,12 +71,14 @@ def create_images():
             for prompt in prompts:
                 queue.append(QueueItem(checkpoint, prompt))
 
+    print("processing queue")
     # call async function process_queue, wait for it to finish
     asyncio.run(process_queue(queue))
 
 
 def main():
-    create_things()
+    print("Starting")
+    # create_things()
     create_images()
 
 
