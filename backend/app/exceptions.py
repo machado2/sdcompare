@@ -12,3 +12,7 @@ class NotReadyException(ImageGenerationException):
 
 class TimeoutException(ImageGenerationException):
     pass
+
+
+class RateLimitedException(ImageGenerationException):
+    pass

@@ -8,7 +8,7 @@ from PIL import Image
 
 from app.db_operations import Checkpoint
 from app.exceptions import CensoredException, ImageGenerationException, NotReadyException, \
-    TimeoutException
+    TimeoutException, RateLimitedException
 from app.settings import AI_HORDE_API_KEY
 
 
@@ -31,11 +31,15 @@ class AiHordeImageGenerator:
 
     def post(self, path, body):
         response = requests.post(f"{self.BASE_URL}{path}", headers=self.headers, json=body)
+        if response.status_code == 429:
+            raise RateLimitedException
         response.raise_for_status()
         return response.json()
 
     def get(self, path: str) -> any:
         response = requests.get(f"{self.BASE_URL}{path}", headers=self.headers)
+        if response.status_code == 429:
+            raise RateLimitedException
         response.raise_for_status()
         return response.json()
 
