@@ -5,7 +5,12 @@ from flask import Flask, request, jsonify, send_file
 
 import app.db_operations as db
 
-app: Flask = Flask(__name__)
+app: Flask = Flask(__name__, static_folder='../../ui/build', static_url_path='/')
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return app.send_static_file('index.html')
 
 
 @app.route('/checkpoints', methods=['GET'])
