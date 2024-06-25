@@ -32,7 +32,7 @@ async def process_queue(queue: list[QueueItem]):
     semaphore = Semaphore(10)
     tasks = []
     for item in queue:
-        task = asyncio.create_task(create_insert_image(item, semaphore))
+        task = create_insert_image(item, semaphore)
         tasks.append(task)
     await asyncio.gather(*tasks)
 
