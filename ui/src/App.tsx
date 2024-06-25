@@ -49,6 +49,11 @@ const App: React.FC = () => {
       axios.get(`/prompts?category_id=${selectedCategory}`)
           .then(response => setPrompts(response.data))
           .catch(error => console.error("There was an error fetching prompts!", error));
+    } else {
+      // Fetch all prompts if no category is selected
+      axios.get('/prompts')
+          .then(response => setPrompts(response.data))
+          .catch(error => console.error("There was an error fetching prompts!", error));
     }
   }, [selectedCategory]);
 
@@ -66,14 +71,14 @@ const App: React.FC = () => {
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory} />
         </div>
-        {
-            (selectedCategory !== null && selectedCheckpoint !== null ) &&
-            <ImageComparison
-                prompts={prompts}
-                selectedCheckpoint={selectedCheckpoint}
-                selectedPrompt={selectedPrompt}
-                setSelectedPrompt={setSelectedPrompt} />
-        }
+        <ImageComparison
+            prompts={prompts}
+            selectedCheckpoint={selectedCheckpoint}
+            selectedPrompt={selectedPrompt}
+            setSelectedPrompt={setSelectedPrompt}
+            selectedCategory={selectedCategory}
+            categories={categories}
+        />
       </div>
   );
 };

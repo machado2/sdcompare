@@ -1,0 +1,26 @@
+.scroll-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-y: auto;
+    display: block;
+    max-height: 70vh; /* Adjust as needed for your use case */
+}
+
+.scroll-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.scroll-table td, .scroll-table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.scroll-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
