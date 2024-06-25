@@ -1,5 +1,6 @@
 import React from 'react';
 import ImageById from "./ImageById";
+import './CheckpointPromptSingleTable.css'
 
 interface Prompt {
     id: number;
@@ -21,24 +22,19 @@ interface CheckpointPromptSingleTableProps {
 
 const CheckpointPromptSingleTable: React.FC<CheckpointPromptSingleTableProps> = ({prompts, checkpoints, selectedPrompt}) => {
     return (
-        <table className="scroll-table">
-            <thead>
-            <tr>
-                <th>Checkpoint</th>
-                <th>Prompt: {prompts.find(p => p.id === selectedPrompt)?.prompt}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {checkpoints.map(checkpoint => (
-                <tr key={checkpoint.id}>
-                    <td>{checkpoint.name}</td>
-                    <td>
+        <div className="container">
+            <div className="header">
+                <h3>Prompt: {prompts.find(p => p.id === selectedPrompt)?.prompt}</h3>
+            </div>
+            <div className="checkpoints">
+                {checkpoints.map(checkpoint => (
+                    <div className="checkpoint" key={checkpoint.id}>
+                        <h4>{checkpoint.name}</h4>
                         <ImageById prompt_id={selectedPrompt} checkpoint_id={checkpoint.id} />
-                    </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 };
 
