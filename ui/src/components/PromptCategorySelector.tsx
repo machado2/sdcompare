@@ -17,7 +17,7 @@ const PromptCategorySelector: React.FC<Props> = ({
     return (
         <div>
             <h2>Select Prompt Category</h2>
-            <select onChange={(e) => setSelectedCategory(Number(e.target.value))} value={selectedCategory || ''}>
+            <select onChange={(e) => setSelectedCategory(Number(e.target.value) || null)} value={selectedCategory || ''}>
                 <option value=''>Select Category</option>
                 {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>

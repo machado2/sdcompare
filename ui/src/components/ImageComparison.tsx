@@ -47,10 +47,6 @@ const ImageComparison: React.FC<Props> = ({
         }
     }, [selectedCheckpoint]);
 
-    // if (!selectedCheckpoint && !selectedCategory) {
-    //     return <></>
-    // }
-
     return (
         <div>
             <h2>Select Prompt</h2>
