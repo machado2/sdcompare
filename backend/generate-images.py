@@ -42,7 +42,7 @@ def main():
 
     missing = get_missing_images()
     queue = []
-    for chk_id, prompt_id, chk_name, prompt, worker_count, prompt_id in missing:
+    for chk_id, prompt_id, chk_name, worker_count, prompt in missing:
         queue.append(QueueItem(Checkpoint(chk_id, chk_name, worker_count), Prompt(prompt_id, prompt, 0)))
     print("processing queue")
     asyncio.run(process_queue(queue))

@@ -128,7 +128,7 @@ def get_checkpoints() -> list[Checkpoint]:
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute('SELECT id, name, worker_count FROM checkpoints')
+    cursor.execute('SELECT id, name, worker_count FROM checkpoints order by worker_count desc, name asc')
     checkpoints = [Checkpoint(*row) for row in cursor.fetchall()]
 
     cursor.close()
@@ -187,13 +187,14 @@ def get_missing_images():
     with closing(get_db_connection()) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-        select chk.id as checkpoint_id, p.id, chk.name, p.prompt, chk.worker_count as prompt_id, i.id
+        select chk.id as checkpoint_id, p.id as prompt_id, chk.name, chk.worker_count, p.prompt
         from checkpoints chk
         cross join prompts p
         left join images i
         on i.checkpoint_id = chk.id
         and i.prompt_id = p.id
-        where i.id is null;
+        where i.id is null
+        order by chk.worker_count desc, chk.name asc;
         ''')
         missing_images = cursor.fetchall()
         cursor.close()
