@@ -154,6 +154,16 @@ def get_prompts(category_id: int = None) -> list[Prompt]:
     return prompts
 
 
+def get_one_prompt_per_category() -> list[Prompt]:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, prompt, category_id FROM prompts WHERE id IN (SELECT MIN(id) FROM prompts GROUP BY '
+                   'category_id)')
+    prompts = [Prompt(*row) for row in cursor.fetchall()]
+    cursor.close()
+    return prompts
+
+
 def get_categories() -> list[Category]:
     with closing(get_db_connection()) as conn:
         cursor = conn.cursor()

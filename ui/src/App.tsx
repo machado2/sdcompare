@@ -51,7 +51,7 @@ const App: React.FC = () => {
           .catch(error => console.error("There was an error fetching prompts!", error));
     } else {
       // Fetch all prompts if no category is selected
-      axios.get('/prompts')
+      axios.get('/some_prompts')
           .then(response => setPrompts(response.data))
           .catch(error => console.error("There was an error fetching prompts!", error));
     }

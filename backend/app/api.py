@@ -38,6 +38,12 @@ def list_prompts():
     return jsonify(prompts)
 
 
+@app.route('/some_prompts', methods=['GET'])
+def list_some_prompts():
+    prompts = db.get_one_prompt_per_category()
+    return jsonify(prompts)
+
+
 @app.route('/image', methods=['GET'])
 def get_image():
     checkpoint_id = request.args.get('checkpoint_id')
