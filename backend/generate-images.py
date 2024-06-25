@@ -1,4 +1,3 @@
-# src/main.py
 import asyncio
 from asyncio import Semaphore
 
