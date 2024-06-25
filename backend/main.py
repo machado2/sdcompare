@@ -1,5 +1,6 @@
 # src/main.py
 import asyncio
+import threading
 from asyncio import Semaphore
 
 from app.aihorde_image_generator import AiHordeImageGenerator
@@ -78,14 +79,14 @@ def create_images():
 
 
 def serve_api():
-    api.run()
+    threading.Thread(target=api.run).start()
 
 
 def main():
     print("Starting")
     # create_things()
-    # create_images()
     serve_api()
+    create_images()
 
 
 if __name__ == "__main__":
