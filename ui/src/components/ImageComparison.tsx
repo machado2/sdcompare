@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import ImageById from "./ImageById";
 
 interface Prompt {
     id: number;
@@ -17,20 +18,6 @@ interface Props {
 const ImageComparison: React.FC<Props> = ({
                                               prompts, selectedCheckpoint, selectedPrompt, setSelectedPrompt
                                           }) => {
-    const [image, setImage] = React.useState<string | null>(null);
-
-    React.useEffect(() => {
-        if (selectedPrompt !== null) {
-            // Fetch image
-            axios.get(`/image?checkpoint_id=${selectedCheckpoint}&prompt_id=${selectedPrompt}`, { responseType: 'blob' })
-                .then(response => {
-                    const url = URL.createObjectURL(response.data);
-                    setImage(url);
-                })
-                .catch(error => console.error("There was an error fetching the image!", error));
-        }
-    }, [selectedCheckpoint, selectedPrompt]);
-
     return (
         <div>
             <h2>Select Prompt</h2>
@@ -41,9 +28,9 @@ const ImageComparison: React.FC<Props> = ({
                 ))}
             </select>
 
-            {image && <div>
+            {selectedPrompt && <div>
                 <h3>Generated Image</h3>
-                <img src={image} alt="Generated" />
+                <ImageById prompt_id={selectedPrompt} checkpoint_id={selectedCheckpoint} />
             </div>}
         </div>
     );
