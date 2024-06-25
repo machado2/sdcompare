@@ -22,13 +22,12 @@ async def create_insert_image(item: QueueItem):
         image = await image_generator.create_image(prompt.prompt, chk.name)
         insert_image(chk.id, prompt.id, image)
         print(f"Created image for {chk.name}, prompt: {prompt.prompt}")
-    except RateLimitedException as e:
-        print(f"Rate limited, failed to create image for {chk.name}, prompt: {prompt.prompt}")
-        await asyncio.sleep(60)
     except ImageGenerationException as e:
         print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+        await asyncio.sleep(60)
     except Exception as e:
         print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+        await asyncio.sleep(60)
 
 
 async def process_queue(queue: list[QueueItem]):
