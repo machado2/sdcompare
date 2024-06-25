@@ -13,13 +13,13 @@ class QueueItem:
 
 
 async def create_insert_image(item: QueueItem, semaphore: Semaphore):
+    prompt = item.prompt
+    chk = item.checkpoint
     if exists_image(item.checkpoint.id, item.prompt.id):
-        print("-", end="", flush=True)
+        print(f"Already exists image for {chk.name}, prompt: {prompt.prompt}")
         return
     async with semaphore:
-        print(".", end="", flush=True)
-        prompt = item.prompt
-        chk = item.checkpoint
+        print(f"Start creating image for {chk.name}, prompt: {prompt.prompt}")
         try:
             image = await image_generator.create_image(prompt.prompt, chk.name)
             insert_image(chk.id, prompt.id, image)
