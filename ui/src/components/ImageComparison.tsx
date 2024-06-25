@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ImageById from "./ImageById";
 import './ImageComparison.css';
+import CheckpointPromptTable from "./CheckpointPromptTable";
+import CheckpointPromptSingleTable from "./CheckpointPromptSingleTable";
+import CategoryPromptTable from "./CategoryPromptTable";
 
 interface Prompt {
     id: number;
@@ -66,77 +69,26 @@ const ImageComparison: React.FC<Props> = ({
             )}
 
             {!selectedPrompt && !selectedCheckpoint && (
-                <table className="scroll-table">
-                    <thead>
-                    <tr>
-                        <th>Checkpoint</th>
-                        {prompts.map(prompt => (
-                            <th key={prompt.id}>{prompt.prompt}</th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {checkpoints.map(checkpoint => (
-                        <tr key={checkpoint.id}>
-                            <td>{checkpoint.name}</td>
-                            {prompts.map(prompt => (
-                                <td key={prompt.id}>
-                                    <ImageById prompt_id={prompt.id} checkpoint_id={checkpoint.id} />
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <CheckpointPromptTable
+                    prompts={prompts}
+                    checkpoints={checkpoints}
+                />
             )}
 
             {selectedPrompt && !selectedCheckpoint && (
-                <table className="scroll-table">
-                    <thead>
-                    <tr>
-                        <th>Checkpoint</th>
-                        <th>Prompt: {prompts.find(p => p.id === selectedPrompt)?.prompt}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {checkpoints.map(checkpoint => (
-                        <tr key={checkpoint.id}>
-                            <td>{checkpoint.name}</td>
-                            <td>
-                                <ImageById prompt_id={selectedPrompt} checkpoint_id={checkpoint.id} />
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <CheckpointPromptSingleTable
+                    prompts={prompts}
+                    checkpoints={checkpoints}
+                    selectedPrompt={selectedPrompt}
+                />
             )}
 
             {!selectedPrompt && selectedCheckpoint && (
-                <table className="scroll-table">
-                    <thead>
-                    <tr>
-                        <th>Category</th>
-                        {prompts.map(prompt => (
-                            <th key={prompt.id}>{prompt.prompt}</th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {categories.map(category => {
-                        const categoryPrompts = prompts.filter(prompt => prompt.category_id === category.id);
-                        return (
-                            <tr key={category.id}>
-                                <td>{category.name}</td>
-                                {categoryPrompts.map(prompt => (
-                                    <td key={prompt.id}>
-                                        <ImageById prompt_id={prompt.id} checkpoint_id={selectedCheckpoint} />
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                </table>
+                <CategoryPromptTable
+                    prompts={prompts}
+                    categories={categories}
+                    selectedCheckpoint={selectedCheckpoint}
+                />
             )}
         </div>
     );
