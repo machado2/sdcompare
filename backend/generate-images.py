@@ -1,7 +1,8 @@
 import asyncio
+from asyncio import Semaphore
 
 from app.db_operations import insert_image, exists_image, Checkpoint, Prompt, get_missing_images
-from app.exceptions import ImageGenerationException, RateLimitedException
+from app.exceptions import ImageGenerationException
 from app.image_generator import image_generator
 
 
@@ -11,36 +12,37 @@ class QueueItem:
         self.prompt = prompt
 
 
-async def create_insert_image(item: QueueItem):
+async def create_insert_image(item: QueueItem, sem: Semaphore):
     prompt = item.prompt
     chk = item.checkpoint
     if exists_image(item.checkpoint.id, item.prompt.id):
         print(f"Already exists image for {chk.name}, prompt: {prompt.prompt}")
         return
-    print(f"Start creating image for {chk.name}, prompt: {prompt.prompt}")
-    try:
-        image = await image_generator.create_image(prompt.prompt, chk.name)
-        insert_image(chk.id, prompt.id, image)
-        print(f"Created image for {chk.name}, prompt: {prompt.prompt}")
-    except ImageGenerationException as e:
-        print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
-        await asyncio.sleep(60)
-    except Exception as e:
-        print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
-        await asyncio.sleep(60)
+    async with sem:
+        print(f"Start creating image for {chk.name}, prompt: {prompt.prompt}")
+        try:
+            image = await image_generator.create_image(prompt.prompt, chk.name)
+            insert_image(chk.id, prompt.id, image)
+            print(f"Created image for {chk.name}, prompt: {prompt.prompt}")
+        except ImageGenerationException as e:
+            print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+            await asyncio.sleep(60)
+        except Exception as e:
+            print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+            await asyncio.sleep(60)
+
+
+# async def process_queue(queue: list[QueueItem]):
+#    for item in queue:
+#        await create_insert_image(item)
 
 
 async def process_queue(queue: list[QueueItem]):
+    semaphore = Semaphore(10)
+    tasks = []
     for item in queue:
-        await create_insert_image(item)
-
-
-# async def process_queue_x(queue: list[QueueItem]):
-#     semaphore = Semaphore(3)
-#     tasks = []
-#     for item in queue:
-#         tasks.append(asyncio.create_task(create_insert_image(item, semaphore)))
-#     await asyncio.gather(*tasks)
+        tasks.append(asyncio.create_task(create_insert_image(item, semaphore)))
+    await asyncio.gather(*tasks)
 
 
 def main():
