@@ -6,7 +6,7 @@ from asyncio import Semaphore
 from app.aihorde_image_generator import AiHordeImageGenerator
 from app.api import app as api
 from app.db_operations import insert_image, exists_image, upsert_checkpoint, upsert_prompt, get_insert_category, \
-    get_checkpoints, Checkpoint, Prompt, get_prompts
+    get_checkpoints, Checkpoint, Prompt, get_prompts, get_missing_images
 from app.db_setup import create_db
 from app.exceptions import ImageGenerationException
 from app.prompts import prompt_categories
@@ -21,6 +21,9 @@ class QueueItem:
 
 
 async def create_insert_image(item: QueueItem, semaphore: Semaphore):
+    if exists_image(item.checkpoint.id, item.prompt.id):
+        print("-", end="", flush=True)
+        return
     async with semaphore:
         print(".", end="", flush=True)
         prompt = item.prompt
@@ -37,9 +40,8 @@ async def process_queue(queue: list[QueueItem]):
     semaphore = Semaphore(10)
     tasks = []
     for item in queue:
-        if not exists_image(item.checkpoint.id, item.prompt.id):
-            task = asyncio.create_task(create_insert_image(item, semaphore))
-            tasks.append(task)
+        task = asyncio.create_task(create_insert_image(item, semaphore))
+        tasks.append(task)
         # if len(tasks) >= 10:
         #    await asyncio.gather(*tasks)
         #    tasks = []
@@ -62,6 +64,16 @@ def create_things():
 
 def create_images():
     print("loading checkpoints and prompts")
+
+    missing = get_missing_images()
+    queue = []
+    for chk_id, prompt_id, chk_name, prompt, worker_count, prompt_id in missing:
+        queue.append(QueueItem(Checkpoint(chk_id, chk_name, worker_count), Prompt(prompt_id, prompt, 0)))
+    print("processing queue")
+    asyncio.run(process_queue(queue))
+
+
+def create_images_old():
     checkpoints = get_checkpoints()
     prompts = get_prompts()
 
@@ -74,7 +86,6 @@ def create_images():
                 queue.append(QueueItem(checkpoint, prompt))
 
     print("processing queue")
-    # call async function process_queue, wait for it to finish
     asyncio.run(process_queue(queue))
 
 

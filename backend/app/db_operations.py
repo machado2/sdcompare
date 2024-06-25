@@ -181,3 +181,20 @@ def get_image(checkpoint_id, prompt_id) -> bytes:
         image_data = cursor.fetchone()
         cursor.close()
         return image_data[0] if image_data else None
+
+
+def get_missing_images():
+    with closing(get_db_connection()) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+        select chk.id as checkpoint_id, p.id, chk.name, p.prompt, chk.worker_count as prompt_id, i.id
+        from checkpoints chk
+        cross join prompts p
+        left join images i
+        on i.checkpoint_id = chk.id
+        and i.prompt_id = p.id
+        where i.id is null;
+        ''')
+        missing_images = cursor.fetchall()
+        cursor.close()
+        return missing_images
