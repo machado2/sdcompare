@@ -57,35 +57,35 @@ const ImageComparison: React.FC<Props> = ({
                 ))}
             </select>
 
-            {selectedCheckpoint && selectedPrompt && (
+            {selectedCheckpoint && selectedPrompt ? (
                 <div>
                     <h3>Generated Image</h3>
                     <ImageById prompt_id={selectedPrompt} checkpoint_id={selectedCheckpoint} />
                 </div>
-            )}
+            ) : null}
 
-            {!selectedPrompt && !selectedCheckpoint && (
+            {!selectedPrompt && !selectedCheckpoint ? (
                 <CheckpointPromptTable
                     prompts={prompts}
                     checkpoints={checkpoints}
                 />
-            )}
+            ) : null}
 
-            {selectedPrompt && !selectedCheckpoint && (
+            {selectedPrompt && !selectedCheckpoint ? (
                 <CheckpointPromptSingleTable
                     prompts={prompts}
                     checkpoints={checkpoints}
                     selectedPrompt={selectedPrompt}
                 />
-            )}
+            ) : null}
 
-            {!selectedPrompt && selectedCheckpoint && (
+            {!selectedPrompt && selectedCheckpoint ? (
                 <CategoryPromptTable
                     prompts={prompts}
                     categories={categories}
                     selectedCheckpoint={selectedCheckpoint}
                 />
-            )}
+            ) : null}
         </div>
     );
 };
