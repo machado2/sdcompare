@@ -1,52 +1,41 @@
-import dataclasses
 from io import BytesIO
 
-from flask import Flask, request, jsonify, send_file
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from tortoise import Tortoise
 
-import app.db_operations as db
+import app.models as models
 
-app: Flask = Flask(__name__, static_folder='../../ui/build', static_url_path='/')
-
-
-@app.route('/', methods=['GET'])
-def index():
-    return app.send_static_file('index.html')
+router = APIRouter()
 
 
-@app.route('/checkpoints', methods=['GET'])
-def list_checkpoints():
-    checkpoints = db.get_checkpoints()
-    checkpoints = [dataclasses.asdict(x) for x in checkpoints]
-    return jsonify(checkpoints)
+async def get_db(request: Request) -> Tortoise:
+    return request.state.db
 
 
-@app.route('/prompts/categories', methods=['GET'])
-def list_prompt_categories():
-    categories = db.get_categories()
-    return jsonify(categories)
+@router.get('/')
+async def index():
+    # Update this line according to how FastAPI serves static files in your project
+    return FileResponse('../../ui/build/index.html')
 
 
-@app.route('/prompts', methods=['GET'])
-def list_prompts():
-    # category is optional
-    category_id = request.args.get('category_id')
-    if category_id:
-        category_id = int(category_id)
-        prompts = db.get_prompts(category_id)
-    else:
-        prompts = db.get_prompts()
-    return jsonify(prompts)
+@router.get('/checkpoints', response_class=JSONResponse)
+async def list_checkpoints():
+    checkpoints = models.StableDiffusionModel.all()
+    return JSONResponse(content=checkpoints)
 
 
-@app.route('/some_prompts', methods=['GET'])
-def list_some_prompts():
-    prompts = db.get_one_prompt_per_category()
-    return jsonify(prompts)
+@router.get('/prompts', response_class=JSONResponse)
+async def list_prompts():
+    prompts = list(await models.Prompt.all().values())
+    return JSONResponse(content=prompts)
 
 
-@app.route('/image', methods=['GET'])
-def get_image():
-    checkpoint_id = request.args.get('checkpoint_id')
-    prompt_id = request.args.get('prompt_id')
-    image_blob = db.get_image(checkpoint_id, prompt_id)
-    return send_file(BytesIO(image_blob), mimetype='image/jpeg')
+@router.get('/image')
+async def get_image(request):
+    style_id = request.query_params.get('checkpoint_id')
+    prompt_id = request.query_params.get('prompt_id')
+    if not style_id or not prompt_id:
+        raise HTTPException(status_code=400, detail="checkpoint_id and prompt_id are required")
+    image_blob = models.StylePromptImage.filter(style_id=style_id, prompt_id=prompt_id).first().image
+    return StreamingResponse(BytesIO(image_blob), media_type='image/jpeg')

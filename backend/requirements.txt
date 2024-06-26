@@ -4,3 +4,5 @@ psycopg2~=2.9.9
 Flask~=3.0.3
 requests~=2.32.3
 tortoise-orm
+asyncpg
+fastapi[all]

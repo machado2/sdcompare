@@ -11,16 +11,7 @@ class StableDiffusionModel(models.Model):
     version = fields.CharField(max_length=10)
     style = fields.CharField(max_length=50)
     nsfw = fields.BooleanField()
-    download_all = fields.BooleanField()
-    config = fields.JSONField()  # Assuming this stores a JSON configuration
-    available = fields.BooleanField()
-    size_on_disk_bytes = fields.BigIntField()
-
-
-class Lora(models.Model):
-    id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=50)
-    is_version = fields.BooleanField()
+    trigger = fields.JSONField(null=True)
 
 
 class Style(models.Model):
@@ -33,7 +24,6 @@ class Style(models.Model):
     height = fields.IntField(null=True)
     cfg_scale = fields.IntField(null=True)
     sampler_name = fields.CharField(max_length=50, null=True)
-    loras = fields.ManyToManyField('models.Lora', related_name='styles')
 
 
 class Category(models.Model):
@@ -57,3 +47,10 @@ class StylePromptImage(models.Model):
     style = fields.ForeignKeyField('models.Style', on_delete=fields.CASCADE)
     prompt = fields.ForeignKeyField('models.Prompt', on_delete=fields.CASCADE)
     image = fields.BinaryField()
+
+
+class StyleLora(models.Model):
+    id = fields.IntField(pk=True)
+    style = fields.ForeignKeyField('models.Style', on_delete=fields.CASCADE)
+    lora = fields.IntField()
+    is_version = fields.BooleanField()
