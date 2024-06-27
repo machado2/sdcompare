@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.api import router as api_router
@@ -38,7 +39,8 @@ def main():
     )
 
     app.include_router(api_router)
-    # serve it
+
+    app.mount("/", app=StaticFiles(directory="../ui/build", html=True))
 
     uvicorn.run(app, port=5000)
 

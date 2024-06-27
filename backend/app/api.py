@@ -21,7 +21,7 @@ async def get_db(request: Request) -> Tortoise:
 @router.get('/')
 async def index():
     # Update this line according to how FastAPI serves static files in your project
-    return FileResponse('../../ui/build/index.html')
+    return FileResponse('../ui/build/index.html')
 
 
 @router.get('/categories', response_class=JSONResponse)
