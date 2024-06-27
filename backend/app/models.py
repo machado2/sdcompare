@@ -47,6 +47,7 @@ class StylePromptImage(models.Model):
     style = fields.ForeignKeyField('models.Style', on_delete=fields.CASCADE)
     prompt = fields.ForeignKeyField('models.Prompt', on_delete=fields.CASCADE)
     image = fields.BinaryField()
+    thumb = fields.BinaryField(null=True)
 
 
 class StyleLora(models.Model):

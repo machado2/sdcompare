@@ -9,7 +9,7 @@ const ImageById: React.FC<Props> = ({ prompt_id, style_id }) => {
     const [isVisible, setIsVisible] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
 
-    const imageUrl = `/image?prompt_id=${prompt_id}&style_id=${style_id}`;
+    const imageUrl = `/thumb?prompt_id=${prompt_id}&style_id=${style_id}`;
 
     useEffect(() => {
         const observer = new IntersectionObserver(
