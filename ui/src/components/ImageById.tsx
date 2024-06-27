@@ -1,14 +1,15 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 interface Props {
     prompt_id: number;
     style_id: number;
+    onMouseEnter?: (prompt_id: number, style_id: number) => void;
+    onMouseLeave?: (prompt_id: number, style_id: number) => void;
 }
 
-const ImageById: React.FC<Props> = ({ prompt_id, style_id }) => {
+const ImageById: React.FC<Props> = ({prompt_id, style_id, onMouseEnter, onMouseLeave}) => {
     const [isVisible, setIsVisible] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
-
     const imageUrl = `/thumb?prompt_id=${prompt_id}&style_id=${style_id}`;
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const ImageById: React.FC<Props> = ({ prompt_id, style_id }) => {
                     observer.disconnect();
                 }
             },
-            { threshold: 0.1 }
+            {threshold: 0.1}
         );
 
         const currentImgRef = imgRef.current;
@@ -35,7 +36,19 @@ const ImageById: React.FC<Props> = ({ prompt_id, style_id }) => {
         };
     }, []);
 
-    return <img ref={imgRef} src={isVisible ? imageUrl : undefined} alt="" data-src={imageUrl} />;
+    const handleMouseEnter = () => {
+        onMouseEnter && onMouseEnter(prompt_id, style_id);
+    }
+
+    const handleMouseLeave = () => {
+        onMouseLeave && onMouseLeave(prompt_id, style_id);
+    }
+
+    return <img ref={imgRef} src={isVisible ? imageUrl : undefined} alt="" data-src={imageUrl}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseEnter}
+    />;
 };
 
 export default ImageById;

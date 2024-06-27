@@ -1,9 +1,11 @@
 h2, h3 {
     color: #333;
+    display: inline-block;
+    width: 8em;
 }
 
 select {
-    width: 100%;
+    width: 70%;
     padding: 10px;
     margin: 10px 0 20px;
     border: 1px solid #ccc;
@@ -12,10 +14,9 @@ select {
 }
 
 table.scroll-table {
-    width: 100%;
+    min-width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    overflow-x: auto;
     display: block;
     white-space: nowrap;
 }

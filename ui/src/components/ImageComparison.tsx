@@ -13,6 +13,8 @@ interface Props {
     selectedPrompt: number | null;
     setSelectedPrompt: (id: number | null) => void;
     selectedCategory: number | null;
+    handleMouseEnter: (prompt_id: number, style_id: number) => void;
+    handleMouseLeave: (prompt_id: number, style_id: number) => void;
 
 }
 
@@ -23,18 +25,20 @@ const ImageComparison: React.FC<Props> = ({
                                               selectedStyle,
                                               selectedPrompt,
                                               setSelectedPrompt,
+                                              handleMouseLeave,
+                                              handleMouseEnter
                                           }) => {
     const styleSelected = styles.find(style => style.id === selectedStyle);
 
     return (
         <div>
-            <h2>Select Prompt</h2>
-            <select onChange={(e) => setSelectedPrompt(Number(e.target.value))} value={selectedPrompt || ''}>
-                <option value=''>Select Prompt</option>
-                {prompts.map(prompt => (
-                    <option key={prompt.id} value={prompt.text}>{prompt.text}</option>
-                ))}
-            </select>
+            <h2>Select Prompt</h2> <select onChange={(e) => setSelectedPrompt(Number(e.target.value))}
+                                           value={selectedPrompt || ''}>
+            <option value=''>Select Prompt</option>
+            {prompts.map(prompt => (
+                <option key={prompt.id} value={prompt.text}>{prompt.text}</option>
+            ))}
+        </select>
 
             {selectedStyle && selectedPrompt ? (
                 <div>
@@ -47,6 +51,8 @@ const ImageComparison: React.FC<Props> = ({
                 <StylePromptTable
                     prompts={prompts}
                     styles={styles}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseLeave={handleMouseLeave}
                 />
             ) : null}
 
@@ -55,6 +61,9 @@ const ImageComparison: React.FC<Props> = ({
                     prompts={prompts}
                     checkpoints={styles}
                     selectedPrompt={selectedPrompt}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseLeave={handleMouseLeave}
+
                 />
             ) : null}
 
@@ -62,6 +71,8 @@ const ImageComparison: React.FC<Props> = ({
                 <StylePromptTable
                     prompts={prompts}
                     styles={[styleSelected as Style]}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseLeave={handleMouseLeave}
                 />
             ) : null}
         </div>

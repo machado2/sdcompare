@@ -5,6 +5,7 @@ import StyleSelector from './components/StyleSelector';
 import ImageComparison from './components/ImageComparison';
 import CategorySelector from "./components/CategorySelector";
 import {Category, Prompt, Style} from "./components/SimpleTypes";
+import LargeImage from "./components/LargeImage";
 
 
 const App: React.FC = () => {
@@ -14,6 +15,27 @@ const App: React.FC = () => {
     const [prompts, setPrompts] = useState<Prompt[]>([]);
     const [selectedStyle, setSelectedStyle] = useState<number | null>(null);
     const [selectedPrompt, setSelectedPrompt] = useState<number | null>(null);
+    const [shownPrompt, setShownPrompt] = React.useState<number | null>(null);
+    const [shownStyle, setShownStyle] = React.useState<number | null>(null);
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+
+    const handleMouseEnter = (prompt_id: number, style_id: number) => {
+        setShownPrompt(prompt_id);
+        setShownStyle(style_id);
+    };
+
+    const handleMouseLeave = (prompt_id: number, style_id: number) => {
+        if (prompt_id === shownPrompt && style_id === shownStyle) {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            const newTimer = setTimeout(() => {
+                setShownPrompt(null);
+                setShownStyle(null);
+            }, 1000);
+            setTimer(newTimer);
+        }
+    }
 
     useEffect(() => {
         // Fetch categories
@@ -47,6 +69,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             <h1>AI Checkpoint Image Comparator</h1>
+            {shownPrompt && shownStyle ? <LargeImage prompt_id={shownPrompt} style_id={shownStyle} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} /> : null}
             <div>
                 <CategorySelector
                     categories={categories}
@@ -68,6 +91,8 @@ const App: React.FC = () => {
                 selectedPrompt={selectedPrompt}
                 setSelectedPrompt={setSelectedPrompt}
                 selectedCategory={selectedCategory}
+                handleMouseEnter={handleMouseEnter}
+                handleMouseLeave={handleMouseLeave}
             />
         </div>
     );

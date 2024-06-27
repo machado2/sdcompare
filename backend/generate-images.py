@@ -44,7 +44,7 @@ async def create_insert_image(item: QueueItem, sem: Semaphore):
 
 
 async def process_queue(queue: list[QueueItem]):
-    semaphore = Semaphore(1)
+    semaphore = Semaphore(20)
     tasks = []
     for item in queue:
         tasks.append(asyncio.create_task(create_insert_image(item, semaphore)))

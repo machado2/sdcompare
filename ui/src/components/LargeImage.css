@@ -1,0 +1,11 @@
+.largeimage {
+    position: absolute;
+    max-width: 512px;
+    max-height: 512px;
+    aspect-ratio: 1 / 1;
+    border: 1px solid #ddd;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
