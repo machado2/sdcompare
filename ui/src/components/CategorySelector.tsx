@@ -11,12 +11,12 @@ interface Props {
     setSelectedCategory: (id: number | null) => void;
 }
 
-const PromptCategorySelector: React.FC<Props> = ({
+const CategorySelector: React.FC<Props> = ({
                                                      categories, selectedCategory, setSelectedCategory
                                                  }) => {
     return (
         <div>
-            <h2>Select Prompt Category</h2>
+            <h2>Select Category</h2>
             <select onChange={(e) => setSelectedCategory(Number(e.target.value) || null)} value={selectedCategory || ''}>
                 <option value=''>Select Category</option>
                 {categories.map(cat => (
@@ -27,4 +27,4 @@ const PromptCategorySelector: React.FC<Props> = ({
     );
 };
 
-export default PromptCategorySelector;
+export default CategorySelector;

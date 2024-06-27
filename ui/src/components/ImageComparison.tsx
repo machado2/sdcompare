@@ -1,51 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import ImageById from "./ImageById";
 import './ImageComparison.css';
-import CheckpointPromptTable from "./CheckpointPromptTable";
-import CheckpointPromptSingleTable from "./CheckpointPromptSingleTable";
-import CategoryPromptTable from "./CategoryPromptTable";
-
-interface Prompt {
-    id: number;
-    prompt: string;
-    category_id: number;
-}
-
-interface Category {
-    id: number;
-    name: string;
-}
-
-interface Checkpoint {
-    id: number;
-    name: string;
-    worker_count: number;
-}
+import StylePromptTable from "./StylePromptTable";
+import StylePromptSingleTable from "./StylePromptSingleTable";
+import {Category, Prompt, Style} from "./SimpleTypes";
 
 interface Props {
+    categories: Category[];
     prompts: Prompt[];
-    selectedCheckpoint: number | null;
+    styles: Style[];
+    selectedStyle: number | null;
     selectedPrompt: number | null;
     setSelectedPrompt: (id: number | null) => void;
     selectedCategory: number | null;
-    categories: Category[];
+
 }
 
 const ImageComparison: React.FC<Props> = ({
-                                              prompts, selectedCheckpoint, selectedPrompt, setSelectedPrompt, selectedCategory, categories
+                                              categories,
+                                              prompts,
+                                              styles,
+                                              selectedStyle,
+                                              selectedPrompt,
+                                              setSelectedPrompt,
                                           }) => {
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
-
-    useEffect(() => {
-        if (!selectedCheckpoint) {
-            axios.get('/checkpoints')
-                .then(response => setCheckpoints(response.data))
-                .catch(error => console.error("There was an error fetching checkpoints!", error));
-        } else {
-            setCheckpoints([]);
-        }
-    }, [selectedCheckpoint]);
+    const styleSelected = styles.find(style => style.id === selectedStyle);
 
     return (
         <div>
@@ -53,37 +32,36 @@ const ImageComparison: React.FC<Props> = ({
             <select onChange={(e) => setSelectedPrompt(Number(e.target.value))} value={selectedPrompt || ''}>
                 <option value=''>Select Prompt</option>
                 {prompts.map(prompt => (
-                    <option key={prompt.id} value={prompt.id}>{prompt.prompt}</option>
+                    <option key={prompt.id} value={prompt.text}>{prompt.text}</option>
                 ))}
             </select>
 
-            {selectedCheckpoint && selectedPrompt ? (
+            {selectedStyle && selectedPrompt ? (
                 <div>
                     <h3>Generated Image</h3>
-                    <ImageById prompt_id={selectedPrompt} checkpoint_id={selectedCheckpoint} />
+                    <ImageById prompt_id={selectedPrompt} style_id={selectedStyle}/>
                 </div>
             ) : null}
 
-            {!selectedPrompt && !selectedCheckpoint ? (
-                <CheckpointPromptTable
+            {!selectedPrompt && !selectedStyle ? (
+                <StylePromptTable
                     prompts={prompts}
-                    checkpoints={checkpoints}
+                    styles={styles}
                 />
             ) : null}
 
-            {selectedPrompt && !selectedCheckpoint ? (
-                <CheckpointPromptSingleTable
+            {selectedPrompt && !selectedStyle ? (
+                <StylePromptSingleTable
                     prompts={prompts}
-                    checkpoints={checkpoints}
+                    checkpoints={styles}
                     selectedPrompt={selectedPrompt}
                 />
             ) : null}
 
-            {!selectedPrompt && selectedCheckpoint ? (
-                <CategoryPromptTable
+            {!selectedPrompt && selectedStyle ? (
+                <StylePromptTable
                     prompts={prompts}
-                    categories={categories}
-                    selectedCheckpoint={selectedCheckpoint}
+                    styles={[styleSelected as Style]}
                 />
             ) : null}
         </div>

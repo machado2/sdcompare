@@ -2,14 +2,14 @@ import React, { useRef, useState, useEffect } from 'react';
 
 interface Props {
     prompt_id: number;
-    checkpoint_id: number;
+    style_id: number;
 }
 
-const ImageById: React.FC<Props> = ({ prompt_id, checkpoint_id }) => {
+const ImageById: React.FC<Props> = ({ prompt_id, style_id }) => {
     const [isVisible, setIsVisible] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
 
-    const imageUrl = `/image?prompt_id=${prompt_id}&checkpoint_id=${checkpoint_id}`;
+    const imageUrl = `/image?prompt_id=${prompt_id}&style_id=${style_id}`;
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -35,7 +35,7 @@ const ImageById: React.FC<Props> = ({ prompt_id, checkpoint_id }) => {
         };
     }, []);
 
-    return <img ref={imgRef} src={isVisible ? imageUrl : undefined} alt="Generated" data-src={imageUrl} />;
+    return <img ref={imgRef} src={isVisible ? imageUrl : undefined} alt="" data-src={imageUrl} />;
 };
 
 export default ImageById;
