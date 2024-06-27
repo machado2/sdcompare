@@ -30,6 +30,8 @@ class AiHordeImageGenerator:
 
     def post(self, path, body):
         response = requests.post(f"{self.BASE_URL}{path}", headers=self.headers, json=body)
+        if response.status_code != 200:
+            print(response.text)
         if response.status_code == 429:
             raise RateLimitedException
         response.raise_for_status()
@@ -37,6 +39,8 @@ class AiHordeImageGenerator:
 
     def get(self, path: str) -> any:
         response = requests.get(f"{self.BASE_URL}{path}", headers=self.headers)
+        if response.status_code != 200:
+            print(response.text)
         if response.status_code == 429:
             raise RateLimitedException
         response.raise_for_status()
