@@ -40,7 +40,7 @@ def main():
     app.include_router(api_router)
     # serve it
 
-    uvicorn.run(app)
+    uvicorn.run(app, port=5000)
 
 
 if __name__ == "__main__":
