@@ -1,7 +1,6 @@
 import json
 
 import aiohttp
-from tortoise import Tortoise
 
 from app.models import Category, Style, StyleCategory  # Ensure correct import paths for your project
 
@@ -128,23 +127,47 @@ async def populate_categories():
                     )
 
 
-async def main():
-    await Tortoise.init(
-        db_url='sqlite://db.sqlite3',  # Update to your actual database URL
-        modules={'models': ['myproject.models']}  # Replace with your actual module path
-    )
-    await Tortoise.generate_schemas()
-    await populate_categories()
-
-
-# Example use with asyncio event loop
-if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(main())
+async def populate_prompts():
+    things_to_draw = [
+        "sunset",
+        "mountain",
+        "mermaid",
+        "cat",
+        "car",
+        "tree",
+        "flower",
+        "house",
+        "spaceship",
+        "ocean wave",
+        "castle",
+        "dragon",
+        "robot",
+        "fairy",
+        "butterfly",
+        "city skyline",
+        "elephant",
+        "guitar",
+        "bird",
+        "bicycle",
+        "piano",
+        "hot air balloon",
+        "horse",
+        "violin",
+        "seahorse",
+        "book",
+        "street lamp",
+        "boat",
+        "bridge",
+        "windmill"
+    ]
+    existing_prompts = await models.Prompt.all()
+    missing_prompts = [thing for thing in things_to_draw if thing not in [prompt.text for prompt in existing_prompts]]
+    for prompt in missing_prompts:
+        await models.Prompt.create(text=prompt)
 
 
 async def populate_db_models():
     await populate_models()
     await populate_styles()
     await populate_categories()
+    await populate_prompts()

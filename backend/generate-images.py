@@ -1,34 +1,40 @@
 import asyncio
 from asyncio import Semaphore
 
-from app.db_operations import insert_image, exists_image, Checkpoint, Prompt, get_missing_images
+from app.aihorde_image_generator import AiHordeImageGenerator
 from app.exceptions import ImageGenerationException
-from app.image_generator import image_generator
+from app.models import Style, Prompt, StylePromptImage
+from app.db import init as init_db
+
+image_generator = AiHordeImageGenerator()
 
 
 class QueueItem:
-    def __init__(self, checkpoint: Checkpoint, prompt: Prompt):
-        self.checkpoint = checkpoint
+    def __init__(self, style: Style, prompt: Prompt):
+        self.style = style
         self.prompt = prompt
 
 
 async def create_insert_image(item: QueueItem, sem: Semaphore):
     prompt = item.prompt
-    chk = item.checkpoint
-    if exists_image(item.checkpoint.id, item.prompt.id):
-        print(f"Already exists image for {chk.name}, prompt: {prompt.prompt}")
+    style = item.style
+    image_exists = await StylePromptImage.exists(style_id=style.id, prompt_id=prompt.id)
+    if image_exists:
+        print(f"Already exists image for {style.name}, prompt: {prompt.text}")
         return
     async with sem:
-        print(f"Start creating image for {chk.name}, prompt: {prompt.prompt}")
+        print(f"Start creating image for {style.name}, prompt: {prompt.text}")
         try:
-            image = await image_generator.create_image(prompt.prompt, chk.name)
-            insert_image(chk.id, prompt.id, image)
-            print(f"Created image for {chk.name}, prompt: {prompt.prompt}")
+            image = await image_generator.create_image(prompt.text, style)
+            await StylePromptImage.create(style_id=style.id, prompt_id=prompt.id, image=image)
+            print(f"Created image for {style.name}, prompt: {prompt.text}")
         except ImageGenerationException as e:
-            print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+            print(f"Failed to create image for {style.name}, prompt: {prompt.text}, {str(e)}")
             await asyncio.sleep(60)
         except Exception as e:
-            print(f"Failed to create image for {chk.name}, prompt: {prompt.prompt}, {str(e)}")
+            import traceback
+            traceback.print_exc()
+            print(f"Failed to create image for {style.name}, prompt: {prompt.text}, {str(e)}")
             await asyncio.sleep(60)
 
 
@@ -38,23 +44,37 @@ async def create_insert_image(item: QueueItem, sem: Semaphore):
 
 
 async def process_queue(queue: list[QueueItem]):
-    semaphore = Semaphore(10)
+    semaphore = Semaphore(1)
     tasks = []
     for item in queue:
         tasks.append(asyncio.create_task(create_insert_image(item, semaphore)))
     await asyncio.gather(*tasks)
 
 
-def main():
-    print("loading checkpoints and prompts")
+# returns parameters for images that are missing from StylePromptImage
+async def get_missing_images() -> list[QueueItem]:
+    from itertools import product
 
-    missing = get_missing_images()
-    queue = []
-    for chk_id, prompt_id, chk_name, worker_count, prompt in missing:
-        queue.append(QueueItem(Checkpoint(chk_id, chk_name, worker_count), Prompt(prompt_id, prompt, 0)))
+    styles = await Style.all()
+    prompts = await Prompt.all()
+    style_prompt_ids = set((spi.style_id, spi.prompt_id) for spi in await StylePromptImage.all())
+    missing = [QueueItem(style, prompt) for style, prompt in product(styles, prompts) if
+               (style.id, prompt.id) not in style_prompt_ids]
+
+    return missing
+
+
+async def main():
+
+    await init_db()
+
+    print("loading styles and prompts")
+
+    missing = await get_missing_images()
+
     print("processing queue")
-    asyncio.run(process_queue(queue))
+    await process_queue(missing)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

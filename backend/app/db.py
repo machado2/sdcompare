@@ -1,6 +1,7 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from tortoise import Tortoise
 
+from app.models import StylePromptImage
 from app.settings import TORTOISE_ORM
 
 
@@ -19,3 +20,4 @@ class DatabaseMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         await close()
         return response
+

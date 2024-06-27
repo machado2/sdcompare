@@ -1,14 +1,13 @@
 import asyncio
 import os
-import random
 from io import BytesIO
 
 import requests
 from PIL import Image
 
-from app.db_operations import Checkpoint
 from app.exceptions import CensoredException, ImageGenerationException, NotReadyException, \
     TimeoutException, RateLimitedException
+from app.models import Style, StableDiffusionModel
 from app.settings import AI_HORDE_API_KEY
 
 
@@ -43,26 +42,20 @@ class AiHordeImageGenerator:
         response.raise_for_status()
         return response.json()
 
-    def ai_horde_generate(self, prompt, model=None):
-        if model is None:
-            model = self.model
+    async def ai_horde_generate(self, prompt: str, negative: str, style: Style):
+        final_prompt = style.prompt.replace("{p}", prompt).replace("{np}", negative)
+        sdmodel: StableDiffusionModel = await style.model
         parameters = {
-            "sampler_name": "k_euler_a",
-            "width": 512,
-            "height": 512,
-            "hires_fix": False,
+            "sampler_name": style.sampler_name,
+            "width": style.width,
+            "height": style.height,
+            "cfg_scale": style.cfg_scale,
         }
-        if "XL" in model:
-            parameters.update({
-                "width": 1024,
-                "height": 576,
-                "seed": str(random.randint(0, 1000000)),
-            })
 
         body = {
-            "prompt": prompt,
+            "prompt": final_prompt,
             "params": parameters,
-            "models": [self.model],
+            "models": [sdmodel.name],
             "nsfw": True,
             "censor_nsfw": False,
             "slow_workers": False,
@@ -86,8 +79,8 @@ class AiHordeImageGenerator:
         else:
             raise NotReadyException
 
-    async def generate_image(self, prompt, model=None):
-        id_image = self.ai_horde_generate(prompt, model)
+    async def generate_image(self, prompt: str, style: Style):
+        id_image = await self.ai_horde_generate(prompt, "", style)
         await asyncio.sleep(10)
         for _ in range(self.TIMEOUT):
             try:
@@ -97,15 +90,11 @@ class AiHordeImageGenerator:
 
         raise TimeoutException
 
-    async def create_image(self, prompt: str, model: str = None) -> bytes:
-        url = await self.generate_image(prompt, model)
+    async def create_image(self, prompt: str, style: Style) -> bytes:
+        url = await self.generate_image(prompt, style)
         response = requests.get(url)
         response.raise_for_status()
         img = Image.open(BytesIO(response.content))
         output = BytesIO()
         img.save(output, format='JPEG')
         return output.getvalue()
-
-    def list_models(self) -> list[Checkpoint]:
-        response = self.get("/status/models?type=image&model_state=all")
-        return [Checkpoint(0, model["name"], model["count"]) for model in response]
