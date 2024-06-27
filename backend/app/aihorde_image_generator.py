@@ -47,8 +47,8 @@ class AiHordeImageGenerator:
         sdmodel: StableDiffusionModel = await style.model
         parameters = {
             "sampler_name": style.sampler_name,
-            "width": style.width,
-            "height": style.height,
+            "width": style.width or 512,
+            "height": style.height or 512,
             "cfg_scale": style.cfg_scale,
         }
 
