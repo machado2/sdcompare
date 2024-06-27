@@ -30,7 +30,7 @@ class AiHordeImageGenerator:
 
     def post(self, path, body):
         response = requests.post(f"{self.BASE_URL}{path}", headers=self.headers, json=body)
-        if response.status_code != 200:
+        if response.status_code < 200 or response.status_code > 299:
             print(response.text)
         if response.status_code == 429:
             raise RateLimitedException
@@ -39,7 +39,7 @@ class AiHordeImageGenerator:
 
     def get(self, path: str) -> any:
         response = requests.get(f"{self.BASE_URL}{path}", headers=self.headers)
-        if response.status_code != 200:
+        if response.status_code < 200 or response.status_code > 299:
             print(response.text)
         if response.status_code == 429:
             raise RateLimitedException
@@ -49,12 +49,15 @@ class AiHordeImageGenerator:
     async def ai_horde_generate(self, prompt: str, negative: str, style: Style):
         final_prompt = style.prompt.replace("{p}", prompt).replace("{np}", negative)
         sdmodel: StableDiffusionModel = await style.model
-        parameters = {
-            "sampler_name": style.sampler_name,
-            "width": style.width or 512,
-            "height": style.height or 512,
-            "cfg_scale": style.cfg_scale,
-        }
+        parameters = {}
+        if style.sampler_name:
+            parameters["sampler_name"] = style.sampler_name
+        if style.width:
+            parameters["width"] = style.width
+        if style.height:
+            parameters["height"] = style.height
+        if style.cfg_scale:
+            parameters["cfg_scale"] = style.cfg_scale
 
         body = {
             "prompt": final_prompt,
