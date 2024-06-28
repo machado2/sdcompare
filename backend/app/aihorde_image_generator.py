@@ -27,11 +27,15 @@ class AiHordeImageGenerator:
             "Content-Type": "application/json"
         }
         self.model = os.environ.get("SD_MODEL", "SDXL 1.0")
+        self.styles_list: dict = requests.get(
+            'https://raw.githubusercontent.com/Haidra-Org/AI-Horde-Styles/main/styles.json').json()
 
     def post(self, path, body):
+        print(body)
         response = requests.post(f"{self.BASE_URL}{path}", headers=self.headers, json=body)
         if response.status_code < 200 or response.status_code > 299:
             print(response.text)
+            print(body)
         if response.status_code == 429:
             raise RateLimitedException
         response.raise_for_status()
@@ -41,6 +45,7 @@ class AiHordeImageGenerator:
         response = requests.get(f"{self.BASE_URL}{path}", headers=self.headers)
         if response.status_code < 200 or response.status_code > 299:
             print(response.text)
+            print(path)
         if response.status_code == 429:
             raise RateLimitedException
         response.raise_for_status()
@@ -49,7 +54,9 @@ class AiHordeImageGenerator:
     async def ai_horde_generate(self, prompt: str, negative: str, style: Style):
         final_prompt = style.prompt.replace("{p}", prompt).replace("{np}", negative)
         sdmodel: StableDiffusionModel = await style.model
-        style_dict = await style_to_dict(style)
+        style_dict = self.styles_list.get(style.name)
+        if not style_dict:
+            raise ImageGenerationException
         parameters = {k: v for k, v in style_dict.items() if k not in ['model', 'prompt']}
         body = {
             "prompt": final_prompt,
