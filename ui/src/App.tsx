@@ -20,9 +20,20 @@ const App: React.FC = () => {
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
     const handleMouseEnter = (prompt_id: number, style_id: number) => {
+        if (timer) {
+            clearTimeout(timer);
+        }
         setShownPrompt(prompt_id);
         setShownStyle(style_id);
     };
+
+    const handleClick = () => {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        setShownPrompt(null);
+        setShownStyle(null);
+    }
 
     const handleMouseLeave = (prompt_id: number, style_id: number) => {
         if (prompt_id === shownPrompt && style_id === shownStyle) {
@@ -69,7 +80,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             <h1>AI Checkpoint Image Comparator</h1>
-            {shownPrompt && shownStyle ? <LargeImage prompt_id={shownPrompt} style_id={shownStyle} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} /> : null}
+            {shownPrompt && shownStyle ? <LargeImage prompt_id={shownPrompt} style_id={shownStyle} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} handleClick={handleClick} /> : null}
             <div>
                 <CategorySelector
                     categories={categories}
