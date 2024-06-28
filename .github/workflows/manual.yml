@@ -63,7 +63,7 @@ jobs:
 
     - name: Stop Running Backend
       run: |
-        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'sudo systemctl stop your-backend-service'
+        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'sudo systemctl stop sdcompare'
 
     - name: Deploy UI to Server
       run: |
@@ -75,4 +75,4 @@ jobs:
 
     - name: Start Backend
       run: |
-        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'sudo systemctl start your-backend-service'
+        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'sudo systemctl start sdcompare'
