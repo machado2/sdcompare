@@ -62,7 +62,7 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
     return (
         <>
             <Box overflowX="auto" maxWidth={boxSize}>
-                <Table variant="striped" colorScheme="cyan">
+                <Table variant="striped" colorScheme="orange">
                     <Thead>
                         <Tr>
                             <Th>Style</Th>
