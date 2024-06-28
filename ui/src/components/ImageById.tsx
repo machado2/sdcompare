@@ -5,9 +5,10 @@ interface Props {
     style_id: number;
     onMouseEnter?: (prompt_id: number, style_id: number) => void;
     onMouseLeave?: (prompt_id: number, style_id: number) => void;
+    onClick: (prompt_id: number, style_id: number) => void;
 }
 
-const ImageById: React.FC<Props> = ({prompt_id, style_id, onMouseEnter, onMouseLeave}) => {
+const ImageById: React.FC<Props> = ({prompt_id, style_id, onMouseEnter, onMouseLeave, onClick}) => {
     const [isVisible, setIsVisible] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
     const imageUrl = `/thumb?prompt_id=${prompt_id}&style_id=${style_id}`;
@@ -44,10 +45,15 @@ const ImageById: React.FC<Props> = ({prompt_id, style_id, onMouseEnter, onMouseL
         onMouseLeave && onMouseLeave(prompt_id, style_id);
     }
 
+    const handleClick = () => {
+        onClick && onClick(prompt_id, style_id);
+    }
+
     return <img ref={imgRef} src={isVisible ? imageUrl : undefined} alt="" data-src={imageUrl}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseEnter}
+                onClick={handleClick}
     />;
 };
 

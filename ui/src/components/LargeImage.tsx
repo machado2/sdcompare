@@ -11,7 +11,7 @@ interface Props {
 }
 
 const LargeImage: React.FC<Props> = ({prompt_id, style_id, handleMouseLeave, handleMouseEnter, handleClick}) => {
-    const imageUrl = `/thumb?prompt_id=${prompt_id}&style_id=${style_id}`;
+    const imageUrl = `/image?prompt_id=${prompt_id}&style_id=${style_id}`;
 
     return <img src={imageUrl} alt="" data-src={imageUrl} className="largeimage"
                 onMouseEnter={() => {
@@ -20,7 +20,7 @@ const LargeImage: React.FC<Props> = ({prompt_id, style_id, handleMouseLeave, han
                 onMouseLeave={() => {
                     handleMouseLeave && handleMouseLeave(prompt_id, style_id)
                 }}
-                onMouseMove={(e) => {
+                onMouseMove={() => {
                     handleMouseEnter && handleMouseEnter(prompt_id, style_id)
                 }}
                 onClick={() => {

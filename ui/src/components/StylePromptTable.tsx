@@ -8,9 +8,10 @@ interface CheckpointPromptTableProps {
     styles: Style[];
     handleMouseEnter: (prompt_id: number, style_id: number) => void;
     handleMouseLeave: (prompt_id: number, style_id: number) => void;
+    handleClick: (prompt_id: number, style_id: number) => void;
 }
 
-const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({prompts, styles, handleMouseLeave, handleMouseEnter}) => {
+const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({prompts, styles, handleMouseLeave, handleMouseEnter, handleClick}) => {
     return (<>
             <table className="scroll-table">
                 <thead>
@@ -28,7 +29,7 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({prompts, styles
                         {prompts.map(prompt => (
                             <td key={prompt.id}>
                                 <ImageById prompt_id={prompt.id} style_id={style.id} onMouseEnter={handleMouseEnter}
-                                           onMouseLeave={handleMouseLeave}/>
+                                           onMouseLeave={handleMouseLeave} onClick={handleClick}/>
                             </td>
                         ))}
                     </tr>

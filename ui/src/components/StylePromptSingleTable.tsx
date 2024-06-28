@@ -9,9 +9,17 @@ interface CheckpointPromptSingleTableProps {
     selectedPrompt: number;
     handleMouseEnter: (prompt_id: number, style_id: number) => void;
     handleMouseLeave: (prompt_id: number, style_id: number) => void;
+    handleClick: (prompt_id: number, style_id: number) => void;
 }
 
-const StylePromptSingleTable: React.FC<CheckpointPromptSingleTableProps> = ({prompts, checkpoints, selectedPrompt, handleMouseLeave, handleMouseEnter}) => {
+const StylePromptSingleTable: React.FC<CheckpointPromptSingleTableProps> = ({
+                                                                                prompts,
+                                                                                checkpoints,
+                                                                                selectedPrompt,
+                                                                                handleMouseLeave,
+                                                                                handleMouseEnter,
+                                                                                handleClick
+                                                                            }) => {
     return (
         <div className="container">
             <div className="header">
@@ -21,7 +29,8 @@ const StylePromptSingleTable: React.FC<CheckpointPromptSingleTableProps> = ({pro
                 {checkpoints.map(checkpoint => (
                     <div className="checkpoint" key={checkpoint.id}>
                         <h4>{checkpoint.name}</h4>
-                        <ImageById prompt_id={selectedPrompt} style_id={checkpoint.id} onMouseLeave={handleMouseLeave} onMouseEnter={handleMouseEnter} />
+                        <ImageById prompt_id={selectedPrompt} style_id={checkpoint.id} onMouseLeave={handleMouseLeave}
+                                   onMouseEnter={handleMouseEnter} onClick={handleClick}/>
                     </div>
                 ))}
             </div>
