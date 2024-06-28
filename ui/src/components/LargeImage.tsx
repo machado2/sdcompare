@@ -1,8 +1,19 @@
 import React from 'react';
-import './LargeImage.css';
-
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Image,
+    Button
+} from '@chakra-ui/react';
 
 interface Props {
+    isOpen: boolean;
+    onClose: () => void;
     prompt_id: number;
     style_id: number;
     handleMouseEnter?: (prompt_id: number, style_id: number) => void;
@@ -10,24 +21,34 @@ interface Props {
     handleClick?: () => void;
 }
 
-const LargeImage: React.FC<Props> = ({prompt_id, style_id, handleMouseLeave, handleMouseEnter, handleClick}) => {
+const LargeImage: React.FC<Props> = ({
+                                         isOpen,
+                                         onClose,
+                                         prompt_id,
+                                         style_id,
+                                         handleMouseLeave,
+                                         handleMouseEnter,
+                                         handleClick
+                                     }) => {
     const imageUrl = `/image?prompt_id=${prompt_id}&style_id=${style_id}`;
 
-    return <img src={imageUrl} alt="" data-src={imageUrl} className="largeimage"
-                onMouseEnter={() => {
-                    handleMouseEnter && handleMouseEnter(prompt_id, style_id)
-                }}
-                onMouseLeave={() => {
-                    handleMouseLeave && handleMouseLeave(prompt_id, style_id)
-                }}
-                onMouseMove={() => {
-                    handleMouseEnter && handleMouseEnter(prompt_id, style_id)
-                }}
-                onClick={() => {
-                    handleClick && handleClick()
-                }}
-
-    />;
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} size="full">
+            <ModalOverlay />
+            <ModalContent onClick={onClose}>
+                <ModalHeader>Image Preview</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody display="flex" justifyContent="center" alignItems="center" p={0}>
+                    <Image
+                        src={imageUrl}
+                        alt=""
+                        maxW="80vw"
+                        maxH="80vh"
+                    />
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    );
 };
 
 export default LargeImage;

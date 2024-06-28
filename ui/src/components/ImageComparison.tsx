@@ -1,9 +1,15 @@
 import React from 'react';
+import {
+    Box,
+    Heading,
+    Select,
+    VStack,
+    Text
+} from '@chakra-ui/react';
 import ImageById from "./ImageById";
-import './ImageComparison.css';
 import StylePromptTable from "./StylePromptTable";
 import StylePromptSingleTable from "./StylePromptSingleTable";
-import {Prompt, Style} from "./SimpleTypes";
+import { Prompt, Style } from "./SimpleTypes";
 
 interface Props {
     prompts: Prompt[];
@@ -12,8 +18,6 @@ interface Props {
     selectedPrompt: number | null;
     setSelectedPrompt: (id: number | null) => void;
     selectedCategory: number | null;
-    handleMouseEnter: (prompt_id: number, style_id: number) => void;
-    handleMouseLeave: (prompt_id: number, style_id: number) => void;
     handleClick: (prompt_id: number, style_id: number) => void;
 }
 
@@ -23,61 +27,63 @@ const ImageComparison: React.FC<Props> = ({
                                               selectedStyle,
                                               selectedPrompt,
                                               setSelectedPrompt,
-                                              handleMouseLeave,
-                                              handleMouseEnter,
                                               handleClick
                                           }) => {
     const styleSelected = styles.find(style => style.id === selectedStyle);
 
     return (
-        <div>
-            <h2>Select Prompt</h2> <select onChange={(e) => setSelectedPrompt(Number(e.target.value))}
-                                           value={selectedPrompt || ''}>
-            <option value=''>Select Prompt</option>
-            {prompts.map(prompt => (
-                <option key={prompt.id} value={prompt.text}>{prompt.text}</option>
-            ))}
-        </select>
+        <Box p={4}>
+            <Heading as="h2" size="lg" mb={4}>Select Prompt</Heading>
 
-            {selectedStyle && selectedPrompt ? (
-                <div>
-                    <h3>Generated Image</h3>
-                    <ImageById prompt_id={selectedPrompt} style_id={selectedStyle} onClick={handleClick}/>
-                </div>
-            ) : null}
+            <Select
+                placeholder="Select Prompt"
+                onChange={(e) => setSelectedPrompt(Number(e.target.value))}
+                value={selectedPrompt || ''}
+                mb={4}
+            >
+                {prompts.map(prompt => (
+                    <option key={prompt.id} value={prompt.id}>{prompt.text}</option>
+                ))}
+            </Select>
 
-            {!selectedPrompt && !selectedStyle ? (
-                <StylePromptTable
-                    prompts={prompts}
-                    styles={styles}
-                    handleMouseEnter={handleMouseEnter}
-                    handleMouseLeave={handleMouseLeave}
-                    handleClick={handleClick}
-                />
-            ) : null}
+            <VStack spacing={4}>
+                {selectedStyle && selectedPrompt ? (
+                    <Box>
+                        <Heading as="h3" size="md" mb={2}>Generated Image</Heading>
+                        <ImageById
+                            prompt_id={selectedPrompt}
+                            style_id={selectedStyle}
+                            onClick={handleClick}
+                        />
+                    </Box>
+                ) : null}
 
-            {selectedPrompt && !selectedStyle ? (
-                <StylePromptSingleTable
-                    prompts={prompts}
-                    checkpoints={styles}
-                    selectedPrompt={selectedPrompt}
-                    handleMouseEnter={handleMouseEnter}
-                    handleMouseLeave={handleMouseLeave}
-                    handleClick={handleClick}
+                {!selectedPrompt && !selectedStyle ? (
+                    <StylePromptTable
+                        prompts={prompts}
+                        styles={styles}
+                        handleClick={handleClick}
+                    />
+                ) : null}
 
-                />
-            ) : null}
+                {selectedPrompt && !selectedStyle ? (
+                    <StylePromptSingleTable
+                        prompts={prompts}
+                        checkpoints={styles}
+                        selectedPrompt={selectedPrompt}
+                        handleClick={handleClick}
+                    />
+                ) : null}
 
-            {!selectedPrompt && selectedStyle ? (
-                <StylePromptTable
-                    prompts={prompts}
-                    styles={[styleSelected as Style]}
-                    handleMouseEnter={handleMouseEnter}
-                    handleMouseLeave={handleMouseLeave}
-                    handleClick={handleClick}
-                />
-            ) : null}
-        </div>
+                {!selectedPrompt && selectedStyle ? (
+                    <StylePromptTable
+                        prompts={prompts}
+                        styles={[styleSelected as Style]}
+                        handleClick={handleClick}
+                    />
+                ) : null}
+            </VStack>
+        </Box>
     );
 };
 

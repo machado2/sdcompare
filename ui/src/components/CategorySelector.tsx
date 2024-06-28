@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+    Box,
+    Heading,
+    Select
+} from '@chakra-ui/react';
 
 interface Category {
     id: number;
@@ -12,18 +17,23 @@ interface Props {
 }
 
 const CategorySelector: React.FC<Props> = ({
-                                                     categories, selectedCategory, setSelectedCategory
-                                                 }) => {
+                                               categories,
+                                               selectedCategory,
+                                               setSelectedCategory
+                                           }) => {
     return (
-        <div>
-            <h2>Select Category</h2>
-            <select onChange={(e) => setSelectedCategory(Number(e.target.value) || null)} value={selectedCategory || ''}>
-                <option value=''>Select Category</option>
+        <Box>
+            <Heading as="h2" size="lg" mb={4}>Select Category</Heading>
+            <Select
+                onChange={(e) => setSelectedCategory(Number(e.target.value) || null)}
+                value={selectedCategory || ''}
+                placeholder="Select Category"
+            >
                 {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
-            </select>
-        </div>
+            </Select>
+        </Box>
     );
 };
 

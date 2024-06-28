@@ -1,42 +1,60 @@
 import React from 'react';
+import {
+    Box,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    useBreakpointValue
+} from '@chakra-ui/react';
 import ImageById from "./ImageById";
-import {Prompt, Style} from "./SimpleTypes";
-
+import { Prompt, Style } from "./SimpleTypes";
 
 interface CheckpointPromptTableProps {
     prompts: Prompt[];
     styles: Style[];
-    handleMouseEnter: (prompt_id: number, style_id: number) => void;
-    handleMouseLeave: (prompt_id: number, style_id: number) => void;
     handleClick: (prompt_id: number, style_id: number) => void;
 }
 
-const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({prompts, styles, handleMouseLeave, handleMouseEnter, handleClick}) => {
-    return (<>
-            <table className="scroll-table">
-                <thead>
-                <tr>
-                    <th>Style</th>
-                    {prompts.map(prompt => (
-                        <th key={prompt.id}>{prompt.text}</th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {styles.map(style => (
-                    <tr key={style.id}>
-                        <td>{style.name}</td>
+const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
+                                                                    prompts,
+                                                                    styles,
+                                                                    handleClick
+                                                                }) => {
+    // Use this hook to make the table horizontally scrollable on small screens
+    const boxSize = useBreakpointValue({ base: "90vw", md: "auto" });
+
+    return (
+        <Box overflowX="auto" maxWidth={boxSize}>
+            <Table variant="striped" colorScheme="teal">
+                <Thead>
+                    <Tr>
+                        <Th>Style</Th>
                         {prompts.map(prompt => (
-                            <td key={prompt.id}>
-                                <ImageById prompt_id={prompt.id} style_id={style.id} onMouseEnter={handleMouseEnter}
-                                           onMouseLeave={handleMouseLeave} onClick={handleClick}/>
-                            </td>
+                            <Th key={prompt.id}>{prompt.text}</Th>
                         ))}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {styles.map(style => (
+                        <Tr key={style.id}>
+                            <Td>{style.name}</Td>
+                            {prompts.map(prompt => (
+                                <Td key={prompt.id}>
+                                    <ImageById
+                                        prompt_id={prompt.id}
+                                        style_id={style.id}
+                                        onClick={handleClick}
+                                    />
+                                </Td>
+                            ))}
+                        </Tr>
+                    ))}
+                </Tbody>
+            </Table>
+        </Box>
     );
 };
 

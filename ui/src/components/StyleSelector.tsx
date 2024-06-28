@@ -1,5 +1,10 @@
 import React from 'react';
-import {Style} from "./SimpleTypes";
+import {
+    Box,
+    Heading,
+    Select
+} from '@chakra-ui/react';
+import { Style } from "./SimpleTypes";
 
 interface Props {
     styles: Style[];
@@ -8,18 +13,23 @@ interface Props {
 }
 
 const StyleSelector: React.FC<Props> = ({
-                                            styles, selectedStyle, setSelectedStyle
+                                            styles,
+                                            selectedStyle,
+                                            setSelectedStyle
                                         }) => {
     return (
-        <div>
-            <h2>Select Style</h2>
-            <select onChange={(e) => setSelectedStyle(Number(e.target.value))} value={selectedStyle || ''}>
-                <option value=''>Select Checkpoint</option>
+        <Box>
+            <Heading as="h2" size="lg" mb={4}>Select Style</Heading>
+            <Select
+                onChange={(e) => setSelectedStyle(Number(e.target.value))}
+                value={selectedStyle || ''}
+                placeholder="Select Style"
+            >
                 {styles.map(cp => (
                     <option key={cp.id} value={cp.id}>{cp.name}</option>
                 ))}
-            </select>
-        </div>
+            </Select>
+        </Box>
     );
 };
 

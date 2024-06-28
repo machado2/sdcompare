@@ -38,7 +38,7 @@ async def list_styles(category_id: int | None = None):
     if category_id:
         styles_categories = await models.StyleCategory.filter(category_id=category_id).prefetch_related(
             'style').all()
-        styles = [(await models.style_to_dict(style_category.style)).dict() for style_category in
+        styles = [(await models.style_to_dict(style_category.style)) for style_category in
                   styles_categories]
     else:
         styles = list(await models.Style.all().values())
