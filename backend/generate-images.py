@@ -39,7 +39,7 @@ async def create_insert_image(item: QueueItem):
 async def process_queue(queue: list[QueueItem]):
     tasks = []
     for item in queue:
-        await asyncio.sleep(60)
+        await asyncio.sleep(1)
         await create_insert_image(item)
 
 

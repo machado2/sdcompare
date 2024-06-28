@@ -3,7 +3,7 @@ import json
 import aiohttp
 
 from app.models import Category, Style, StyleCategory  # Ensure correct import paths for your project
-
+from app.things_to_draw import things_to_draw
 
 async def populate_models():
     models_file: dict = requests.get(
@@ -128,38 +128,6 @@ async def populate_categories():
 
 
 async def populate_prompts():
-    things_to_draw = [
-        "sunset",
-        "mountain",
-        "mermaid",
-        "cat",
-        "car",
-        "tree",
-        "flower",
-        "house",
-        "spaceship",
-        "ocean wave",
-        "castle",
-        "dragon",
-        "robot",
-        "fairy",
-        "butterfly",
-        "city skyline",
-        "elephant",
-        "guitar",
-        "bird",
-        "bicycle",
-        "piano",
-        "hot air balloon",
-        "horse",
-        "violin",
-        "seahorse",
-        "book",
-        "street lamp",
-        "boat",
-        "bridge",
-        "windmill"
-    ]
     existing_prompts = await models.Prompt.all()
     missing_prompts = [thing for thing in things_to_draw if thing not in [prompt.text for prompt in existing_prompts]]
     for prompt in missing_prompts:

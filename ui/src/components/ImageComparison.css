@@ -18,7 +18,6 @@ table.scroll-table {
     border-collapse: collapse;
     margin: 20px 0;
     display: block;
-    white-space: nowrap;
 }
 
 .scroll-table th, .scroll-table td {
