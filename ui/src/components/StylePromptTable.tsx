@@ -1,29 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Box,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    useBreakpointValue,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
     Button,
-    Textarea,
-    useDisclosure,
-    Spinner,
     Center,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Spinner,
+    Table,
+    Tbody,
+    Td,
+    Textarea,
+    Th,
+    Thead,
+    Tr,
+    useBreakpointValue,
+    useDisclosure,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import ImageById from './ImageById';
-import { Prompt, Style } from './SimpleTypes';
+import {Prompt, Style} from './SimpleTypes';
 
 interface CheckpointPromptTableProps {
     prompts: Prompt[];
@@ -36,8 +36,8 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
                                                                     styles,
                                                                     handleClick,
                                                                 }) => {
-    const boxSize = useBreakpointValue({ base: '90vw', md: 'auto' });
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const boxSize = useBreakpointValue({base: '90vw', md: 'auto'});
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const [modalContent, setModalContent] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -104,14 +104,14 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
             </Box>
 
             <Modal isOpen={isOpen} onClose={onClose} size="xl">
-                <ModalOverlay />
+                <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Style Details</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody>
                         {loading ? (
                             <Center>
-                                <Spinner size="xl" />
+                                <Spinner size="xl"/>
                             </Center>
                         ) : (
                             <Textarea

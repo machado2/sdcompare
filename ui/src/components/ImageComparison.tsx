@@ -4,7 +4,6 @@ import {
     Heading,
     Select,
     VStack,
-    Text
 } from '@chakra-ui/react';
 import ImageById from "./ImageById";
 import StylePromptTable from "./StylePromptTable";

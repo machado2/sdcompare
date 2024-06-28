@@ -4,11 +4,9 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     Image,
-    Button
 } from '@chakra-ui/react';
 
 interface Props {
@@ -26,9 +24,6 @@ const LargeImage: React.FC<Props> = ({
                                          onClose,
                                          prompt_id,
                                          style_id,
-                                         handleMouseLeave,
-                                         handleMouseEnter,
-                                         handleClick
                                      }) => {
     const imageUrl = `/image?prompt_id=${prompt_id}&style_id=${style_id}`;
 
