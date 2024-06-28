@@ -58,6 +58,7 @@ async def populate_styles():
                 height=style.get('height'),
                 cfg_scale=style.get('cfg_scale'),
                 sampler_name=style.get('sampler_name'),
+                original_json=style
             )
             existing_loras = []
         else:
@@ -68,6 +69,7 @@ async def populate_styles():
             s.height = style.get('height')
             s.cfg_scale = style.get('cfg_scale')
             s.sampler_name = style.get('sampler_name')
+            s.original_json = style
             await s.save()
 
             # Clear existing Lora instances

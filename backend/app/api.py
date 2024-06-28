@@ -27,6 +27,12 @@ async def list_styles():
     return JSONResponse(content=checkpoints)
 
 
+@router.get('/style', response_class=JSONResponse)
+async def get_style(style_id: int):
+    style = await models.Style.get(id=style_id)
+
+    return JSONResponse(content=(await models.style_to_dict(style)).dict())
+
 @router.get('/styles', response_class=JSONResponse)
 async def list_styles(category_id: int | None = None):
     if category_id:
