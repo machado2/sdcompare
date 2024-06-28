@@ -27,8 +27,6 @@ class AiHordeImageGenerator:
             "Content-Type": "application/json"
         }
         self.model = os.environ.get("SD_MODEL", "SDXL 1.0")
-        self.styles_list: dict = requests.get(
-            'https://raw.githubusercontent.com/Haidra-Org/AI-Horde-Styles/main/styles.json').json()
 
     def post(self, path, body):
         print(body)
@@ -54,7 +52,7 @@ class AiHordeImageGenerator:
     async def ai_horde_generate(self, prompt: str, negative: str, style: Style):
         final_prompt = style.prompt.replace("{p}", prompt).replace("{np}", negative)
         sdmodel: StableDiffusionModel = await style.model
-        style_dict = self.styles_list.get(style.name)
+        style_dict = style.original_json
         if not style_dict:
             raise ImageGenerationException
         parameters = {k: v for k, v in style_dict.items() if k not in ['model', 'prompt']}
