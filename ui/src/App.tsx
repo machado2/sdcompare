@@ -91,7 +91,7 @@ const App: React.FC = () => {
         <ChakraProvider>
             <Box className="App" p={4}>
                 <Heading as="h1" size="xl" mb={4}>
-                    AI Checkpoint Image Comparator
+                    AI Horde Style Comparator
                 </Heading>
 
                 {shownPrompt && shownStyle && (
