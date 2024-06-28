@@ -4,11 +4,23 @@ import PIL.Image
 from PIL import Image
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 from tortoise import Tortoise
 
 import app.models as models
 
 router = APIRouter()
+
+
+class CacheControlMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response: Response = await call_next(request)
+        if request.url.path.startswith('/image') or request.url.path.startswith('/thumb'):
+            response.headers['Cache-Control'] = 'public, max-age=604800'  # 7 days
+        else:
+            response.headers['Cache-Control'] = 'public, max-age=3600'  # 1 hour
+        return response
 
 
 async def get_db(request: Request) -> Tortoise:

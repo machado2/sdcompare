@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import register_tortoise
 
-from app.api import router as api_router
+from app.api import router as api_router, CacheControlMiddleware
 from app.db import close as close_db
 from app.db import init as init_db
 from app.settings import TORTOISE_ORM
@@ -32,6 +32,9 @@ def main():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # noinspection PyTypeChecker
+    app.add_middleware(CacheControlMiddleware)
 
     register_tortoise(
         app,

@@ -1,4 +1,5 @@
 import asyncio
+import random
 
 from app.aihorde_image_generator import AiHordeImageGenerator
 from app.db import init as init_db
@@ -62,6 +63,8 @@ async def main():
     print("loading styles and prompts")
 
     missing = await get_missing_images()
+
+    random.shuffle(missing)
 
     print("processing queue")
     await process_queue(missing)
