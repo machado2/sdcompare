@@ -7,7 +7,7 @@ from PIL import Image
 
 from app.exceptions import CensoredException, ImageGenerationException, NotReadyException, \
     TimeoutException, RateLimitedException
-from app.models import Style, StableDiffusionModel
+from app.models import Style, StableDiffusionModel, style_to_dict
 from app.settings import AI_HORDE_API_KEY
 
 
@@ -49,16 +49,8 @@ class AiHordeImageGenerator:
     async def ai_horde_generate(self, prompt: str, negative: str, style: Style):
         final_prompt = style.prompt.replace("{p}", prompt).replace("{np}", negative)
         sdmodel: StableDiffusionModel = await style.model
-        parameters = {}
-        if style.sampler_name:
-            parameters["sampler_name"] = style.sampler_name
-        if style.width:
-            parameters["width"] = style.width
-        if style.height:
-            parameters["height"] = style.height
-        if style.cfg_scale:
-            parameters["cfg_scale"] = style.cfg_scale
-
+        style_dict = await style_to_dict(style)
+        parameters = {k: v for k, v in style_dict.items() if k not in ['model', 'prompt']}
         body = {
             "prompt": final_prompt,
             "params": parameters,

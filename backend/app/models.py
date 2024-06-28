@@ -1,4 +1,5 @@
 from tortoise import fields, models
+from tortoise.contrib.pydantic import pydantic_model_creator
 
 
 class StableDiffusionModel(models.Model):
@@ -55,3 +56,10 @@ class StyleLora(models.Model):
     style = fields.ForeignKeyField('models.Style', on_delete=fields.CASCADE)
     lora = fields.IntField()
     is_version = fields.BooleanField()
+
+
+Style_Pydantic = pydantic_model_creator(Style)
+
+
+async def style_to_dict(style: Style):
+    return (await Style_Pydantic.from_tortoise_orm(style)).dict()

@@ -5,11 +5,8 @@ from PIL import Image
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from tortoise import Tortoise
-from tortoise.contrib.pydantic import pydantic_model_creator
 
 import app.models as models
-
-Style_Pydantic = pydantic_model_creator(models.Style)
 
 router = APIRouter()
 
@@ -35,7 +32,7 @@ async def list_styles(category_id: int | None = None):
     if category_id:
         styles_categories = await models.StyleCategory.filter(category_id=category_id).prefetch_related(
             'style').all()
-        styles = [(await Style_Pydantic.from_tortoise_orm(style_category.style)).dict() for style_category in
+        styles = [(await models.style_to_dict(style_category.style)).dict() for style_category in
                   styles_categories]
     else:
         styles = list(await models.Style.all().values())
