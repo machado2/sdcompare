@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import {
-    ChakraProvider,
-    Box,
-    Heading,
-    VStack,
-    Spinner
-} from '@chakra-ui/react';
-
-import StyleSelector from './components/StyleSelector';
+import {Box, ChakraProvider, Heading, Select, Spinner, VStack} from '@chakra-ui/react';
 import ImageComparison from './components/ImageComparison';
 import CategorySelector from "./components/CategorySelector";
-import { Category, Prompt, Style } from "./components/SimpleTypes";
+import {Category, Prompt, Style} from "./components/SimpleTypes";
 import LargeImage from "./components/LargeImage";
+import StyleSelector from "./components/StyleSelector";
 
 const App: React.FC = () => {
     const [styles, setStyles] = useState<Style[]>([]);
@@ -104,43 +97,54 @@ const App: React.FC = () => {
                 )}
 
                 <VStack spacing={4} align="stretch">
-                    {loadingCategories ? (
-                        <Spinner />
+                    {loadingCategories || loadingStyles || loadingPrompts ? (
+                        <Spinner/>
                     ) : (
-                        <CategorySelector
-                            categories={categories}
-                            selectedCategory={selectedCategory}
-                            setSelectedCategory={setSelectedCategory}
-                        />
+                        <>
+                            <Box display="inline-block">
+                                <CategorySelector
+                                    categories={categories}
+                                    selectedCategory={selectedCategory}
+                                    setSelectedCategory={setSelectedCategory}
+                                />
+
+                                <StyleSelector
+                                    styles={styles}
+                                    selectedStyle={selectedStyle}
+                                    setSelectedStyle={setSelectedStyle}
+                                />
+
+                                <Box display="inline-block" width="25%" ml="10px">
+                                    <Select
+                                        placeholder="Select Prompt"
+                                        onChange={(e) => setSelectedPrompt(Number(e.target.value))}
+                                        value={selectedPrompt || ''}
+                                        mb={4}
+                                    >
+                                        {prompts.map(prompt => (
+                                            <option key={prompt.id} value={prompt.id}>{prompt.text}</option>
+                                        ))}
+                                    </Select>
+                                </Box>
+
+                            </Box>
+                            <ImageComparison
+                                prompts={prompts}
+                                styles={styles}
+                                selectedStyle={selectedStyle}
+                                selectedPrompt={selectedPrompt}
+                                setSelectedPrompt={setSelectedPrompt}
+                                selectedCategory={selectedCategory}
+                                handleClick={handleClick}
+                            />
+                        </>
                     )}
 
-                    {loadingStyles ? (
-                        <Spinner />
-                    ) : (
-                        <StyleSelector
-                            styles={styles}
-                            selectedStyle={selectedStyle}
-                            setSelectedStyle={setSelectedStyle}
-                        />
-                    )}
-
-                    {loadingPrompts ? (
-                        <Spinner />
-                    ) : (
-                        <ImageComparison
-                            prompts={prompts}
-                            styles={styles}
-                            selectedStyle={selectedStyle}
-                            selectedPrompt={selectedPrompt}
-                            setSelectedPrompt={setSelectedPrompt}
-                            selectedCategory={selectedCategory}
-                            handleClick={handleClick}
-                        />
-                    )}
                 </VStack>
             </Box>
         </ChakraProvider>
-    );
+    )
+        ;
 };
 
 export default App;

@@ -32,19 +32,6 @@ const ImageComparison: React.FC<Props> = ({
 
     return (
         <Box p={4}>
-            <Heading as="h2" size="lg" mb={4}>Select Prompt</Heading>
-
-            <Select
-                placeholder="Select Prompt"
-                onChange={(e) => setSelectedPrompt(Number(e.target.value))}
-                value={selectedPrompt || ''}
-                mb={4}
-            >
-                {prompts.map(prompt => (
-                    <option key={prompt.id} value={prompt.id}>{prompt.text}</option>
-                ))}
-            </Select>
-
             <VStack spacing={4}>
                 {selectedStyle && selectedPrompt ? (
                     <Box>

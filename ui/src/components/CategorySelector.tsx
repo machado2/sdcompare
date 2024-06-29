@@ -22,8 +22,7 @@ const CategorySelector: React.FC<Props> = ({
                                                setSelectedCategory
                                            }) => {
     return (
-        <Box>
-            <Heading as="h2" size="lg" mb={4}>Select Category</Heading>
+        <Box width="25%" display="inline-block" mr="10px">
             <Select
                 onChange={(e) => setSelectedCategory(Number(e.target.value) || null)}
                 value={selectedCategory || ''}

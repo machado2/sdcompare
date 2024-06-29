@@ -18,8 +18,7 @@ const StyleSelector: React.FC<Props> = ({
                                             setSelectedStyle
                                         }) => {
     return (
-        <Box>
-            <Heading as="h2" size="lg" mb={4}>Select Style</Heading>
+        <Box width="25%" display="inline-block">
             <Select
                 onChange={(e) => setSelectedStyle(Number(e.target.value))}
                 value={selectedStyle || ''}
