@@ -1,21 +1,15 @@
 import React from 'react';
-import {
-    Box,
-    Heading,
-    Select,
-    VStack,
-} from '@chakra-ui/react';
+import {Box, Heading, VStack,} from '@chakra-ui/react';
 import ImageById from "./ImageById";
 import StylePromptTable from "./StylePromptTable";
 import StylePromptSingleTable from "./StylePromptSingleTable";
-import { Prompt, Style } from "./SimpleTypes";
+import {Prompt, Style} from "./SimpleTypes";
 
 interface Props {
     prompts: Prompt[];
     styles: Style[];
     selectedStyle: number | null;
     selectedPrompt: number | null;
-    setSelectedPrompt: (id: number | null) => void;
     selectedCategory: number | null;
     handleClick: (prompt_id: number, style_id: number) => void;
 }
@@ -25,7 +19,6 @@ const ImageComparison: React.FC<Props> = ({
                                               styles,
                                               selectedStyle,
                                               selectedPrompt,
-                                              setSelectedPrompt,
                                               handleClick
                                           }) => {
     const styleSelected = styles.find(style => style.id === selectedStyle);

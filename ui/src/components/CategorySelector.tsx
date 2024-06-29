@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    Box,
-    Heading,
-    Select
-} from '@chakra-ui/react';
+import {Box, Select} from '@chakra-ui/react';
 
 interface Category {
     id: number;

@@ -28,8 +28,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:5000",
-  "//proxy": "https://sdcompare.fbmac.net",
+  "//proxy": "http://localhost:5000",
+  "proxy": "https://sdcompare.fbmac.net",
   "eslintConfig": {
     "extends": [
       "react-app",

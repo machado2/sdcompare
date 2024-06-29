@@ -133,7 +133,6 @@ const App: React.FC = () => {
                                 styles={styles}
                                 selectedStyle={selectedStyle}
                                 selectedPrompt={selectedPrompt}
-                                setSelectedPrompt={setSelectedPrompt}
                                 selectedCategory={selectedCategory}
                                 handleClick={handleClick}
                             />

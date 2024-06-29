@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-    Box,
-    Heading,
-    Select
-} from '@chakra-ui/react';
-import { Style } from "./SimpleTypes";
+import {Box, Select} from '@chakra-ui/react';
+import {Style} from "./SimpleTypes";
 
 interface Props {
     styles: Style[];
