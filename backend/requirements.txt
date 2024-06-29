@@ -7,3 +7,4 @@ tortoise-orm
 asyncpg
 fastapi[all]
 uvicorn
+aerich

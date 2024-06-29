@@ -6,7 +6,9 @@ RUN npm run build
 
 FROM python:3
 WORKDIR /app
-COPY backend .
-COPY --from=0 /app/build /app/ui
+COPY backend backend
+COPY --from=0 /app/build /app/ui/build
+WORKDIR /app/backend
 RUN pip3 install -r requirements.txt
-CMD ["python3", "app.py"]
+EXPOSE 5000
+CMD ["python3", "main.py"]
