@@ -1,0 +1,42 @@
+# This is not the most efficient way to run it, but is the simplest way to get started quickly
+services:
+  sdcompare:
+    image: ghcr.io/machado2/sdcompare:main
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_HOST=192.168.0.195
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=sdstyles
+      - DATABASE_USER=sdcompare
+      - DATABASE_PASSWORD=wololo
+    restart: always
+  createdb:
+    image: ghcr.io/machado2/sdcompare:main
+    environment:
+      - DATABASE_HOST=192.168.0.195
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=sdstyles
+      - DATABASE_USER=sdcompare
+      - DATABASE_PASSWORD=wololo
+    command: ["python", "create-database.py"]
+    restart: on-failure
+  generation:
+    image: ghcr.io/machado2/sdcompare:main
+    environment:
+      - DATABASE_HOST=192.168.0.195
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=sdstyles
+      - DATABASE_USER=sdcompare
+      - DATABASE_PASSWORD=wololo
+    command: ["python", "generate-images.py"]
+    restart: on-failure
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=sdcompare
+      - POSTGRES_PASSWORD=wololo
+      - POSTGRES_DB=sdstyles
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    restart: always

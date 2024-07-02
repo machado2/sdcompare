@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 
 import PIL.Image
@@ -59,7 +60,9 @@ async def list_styles(category_id: int | None = None):
 
 @router.get('/prompts', response_class=JSONResponse)
 async def list_prompts():
-    prompts = list(await models.Prompt.all().values())
+    # this setting allows me to experiment with new prompts without affecting the production environment
+    kind_of_prompt = int(os.getenv("PROMPT_KIND", "1"))
+    prompts = list(await models.Prompt.filter(kind=kind_of_prompt) .all().values())
     return JSONResponse(content=prompts)
 
 

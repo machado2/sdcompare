@@ -9,3 +9,4 @@ fastapi[all]
 uvicorn
 aerich
 aiohttp
+python-dotenv

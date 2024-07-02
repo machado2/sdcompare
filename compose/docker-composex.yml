@@ -1,0 +1,23 @@
+services:
+  sdcompare:
+    image: ghcr.io/machado2/sdcompare:main
+    container_name: sdcompare
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_HOST=192.168.0.195
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=sdstyles
+      - DATABASE_USER=sdcompare
+      - DATABASE_PASSWORD=Groin3-Direction-Certified
+  postgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sdcompare
+      - POSTGRES_PASSWORD=Groin3-Direction-Certified
+      - POSTGRES_DB=sdstyles
+    volumes:
+      - ./data:/var/lib/postgresql/data

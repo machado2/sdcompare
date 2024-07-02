@@ -26,7 +26,6 @@ class Style(models.Model):
     cfg_scale = fields.IntField(null=True)
     sampler_name = fields.CharField(max_length=50, null=True)
     original_json = fields.JSONField(null=True)
-    kind = fields.IntField(default=1.0)
 
 
 class Category(models.Model):
@@ -43,6 +42,7 @@ class StyleCategory(models.Model):
 class Prompt(models.Model):
     id = fields.IntField(pk=True)
     text = fields.TextField()  # Renamed prompt field to text for clarity
+    kind = fields.IntField(default=1)
 
 
 class StylePromptImage(models.Model):

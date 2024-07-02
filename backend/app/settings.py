@@ -1,5 +1,9 @@
-import ssl
 import os
+import ssl
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
