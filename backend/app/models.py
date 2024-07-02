@@ -26,6 +26,7 @@ class Style(models.Model):
     cfg_scale = fields.IntField(null=True)
     sampler_name = fields.CharField(max_length=50, null=True)
     original_json = fields.JSONField(null=True)
+    kind = fields.IntField(default=1.0)
 
 
 class Category(models.Model):
