@@ -8,3 +8,4 @@ asyncpg
 fastapi[all]
 uvicorn
 aerich
+aiohttp
