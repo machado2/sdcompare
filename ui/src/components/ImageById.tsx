@@ -25,8 +25,6 @@ const ImageById: React.FC<Props> = ({
             alt=""
             data-src={imageUrl}
             onClick={handleClick}
-            maxW="128px"
-            maxH="128px"
             objectFit="contain"
             loading="lazy"
         />

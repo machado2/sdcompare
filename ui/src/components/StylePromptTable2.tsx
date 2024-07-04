@@ -3,8 +3,6 @@ import {
     Box,
     Button,
     Center,
-    Flex,
-    Heading,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -13,8 +11,13 @@ import {
     ModalHeader,
     ModalOverlay,
     Spinner,
+    Table,
+    Tbody,
+    Td,
     Textarea,
-    Text,
+    Th,
+    Thead,
+    Tr,
     useBreakpointValue,
     useDisclosure,
 } from '@chakra-ui/react';
@@ -26,11 +29,6 @@ interface CheckpointPromptTableProps {
     prompts: Prompt[];
     styles: Style[];
     handleClick: (prompt_id: number, style_id: number) => void;
-}
-
-interface Image {
-    style: Style;
-    prompt: Prompt;
 }
 
 const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
@@ -61,36 +59,50 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
 
     };
 
-
-    let images: Image[] = []
-    for (let style in styles) {
-        for (let prompt in prompts) {
-            const img = {style: styles[style], prompt: prompts[prompt]}
-            images.push(img)
-        }
-    }
-
     return (
         <>
-            <Flex wrap="wrap" justifyContent="space-around">
-                {images.map((image) => (
-                    <Box float={"left"} key={image.style.id + image.prompt.id}>
-                        <Box margin="5px">
-                            <Text fontSize="lg" fontWeight="bold" width="500px" textOverflow="ellipsis" overflow="hidden"
-                                     whiteSpace="nowrap" onClick={() => {
-                                handleStyleClick(image.style.id)
-                            }}>{image.style.name}</Text>
-                            <Text fontSize="md" width="500px" textOverflow="ellipsis" overflow="hidden"
-                                     whiteSpace="nowrap">{image.prompt.text}</Text>
-                            <ImageById
-                                prompt_id={image.prompt.id}
-                                style_id={image.style.id}
-                                onClick={handleClick}
-                            />
-                        </Box>
-                    </Box>
-                ))}
-            </Flex>
+            <Box overflowX="auto" maxWidth={boxSize}>
+                <Table variant="striped" colorScheme="orange">
+                    <Thead>
+                        <Tr>
+                            <Th>Style</Th>
+                            {prompts.map((prompt) => (
+                                <Th key={prompt.id}>{prompt.text}</Th>
+                            ))}
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {styles.map((style) => (
+                            <Tr key={style.id}>
+                                <Td
+                                    cursor="pointer"
+                                    onClick={() => handleStyleClick(style.id)}
+                                >
+                                    {style.name}
+                                </Td>
+                                {prompts.map((prompt) => (
+                                    <Td key={prompt.id}>
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            maxW="128px"
+                                            maxH="128px"
+                                        >
+                                            <ImageById
+                                                prompt_id={prompt.id}
+                                                style_id={style.id}
+                                                onClick={handleClick}
+                                            />
+                                        </Box>
+                                    </Td>
+                                ))}
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Box>
+
             <Modal isOpen={isOpen} onClose={onClose} size="xl">
                 <ModalOverlay/>
                 <ModalContent>
