@@ -14,6 +14,7 @@ DATABASE_NAME = os.getenv('DATABASE_NAME')
 DATABASE_HOST = os.getenv('DATABASE_HOST')
 DATABASE_PORT = os.getenv('DATABASE_PORT')
 DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+PROMPT_KIND = os.getenv('PROMPT_KIND')
 
 TORTOISE_ORM = {
     "connections": {

@@ -12,3 +12,8 @@ export interface Prompt {
     id: number;
     text: string;
 }
+
+export interface Option {
+    value: string;
+    label: string;
+}

@@ -5,6 +5,7 @@ from app.aihorde_image_generator import AiHordeImageGenerator
 from app.db import init as init_db
 from app.exceptions import ImageGenerationException
 from app.models import Style, Prompt, StylePromptImage
+from app.settings import PROMPT_KIND
 
 image_generator = AiHordeImageGenerator()
 
@@ -49,7 +50,7 @@ async def get_missing_images() -> list[QueueItem]:
     from itertools import product
 
     styles = await Style.all()
-    prompts = await Prompt.all()
+    prompts = await Prompt.filter(kind=PROMPT_KIND).all()
     style_prompt_ids = set((spi.style_id, spi.prompt_id) for spi in await StylePromptImage.all())
     missing = [QueueItem(style, prompt) for style, prompt in product(styles, prompts) if
                (style.id, prompt.id) not in style_prompt_ids]

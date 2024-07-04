@@ -137,7 +137,8 @@ async def populate_prompts():
 
 
 async def populate_db_models():
+    await populate_prompts()
     await populate_models()
     await populate_styles()
     await populate_categories()
-    await populate_prompts()
+
