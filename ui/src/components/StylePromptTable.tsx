@@ -4,7 +4,6 @@ import {
     Button,
     Center,
     Flex,
-    Heading,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -13,8 +12,8 @@ import {
     ModalHeader,
     ModalOverlay,
     Spinner,
-    Textarea,
     Text,
+    Textarea,
     useBreakpointValue,
     useDisclosure,
 } from '@chakra-ui/react';
@@ -63,8 +62,8 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
 
 
     let images: Image[] = []
-    for (let style in styles) {
-        for (let prompt in prompts) {
+    for (let prompt in prompts) {
+        for (let style in styles) {
             const img = {style: styles[style], prompt: prompts[prompt]}
             images.push(img)
         }
@@ -76,12 +75,13 @@ const StylePromptTable: React.FC<CheckpointPromptTableProps> = ({
                 {images.map((image) => (
                     <Box float={"left"} key={image.style.id + image.prompt.id}>
                         <Box margin="5px">
-                            <Text fontSize="lg" fontWeight="bold" width="500px" textOverflow="ellipsis" overflow="hidden"
-                                     whiteSpace="nowrap" onClick={() => {
+                            <Text fontSize="lg" fontWeight="bold" width="500px" textOverflow="ellipsis"
+                                  overflow="hidden"
+                                  whiteSpace="nowrap" onClick={() => {
                                 handleStyleClick(image.style.id)
                             }}>{image.style.name}</Text>
                             <Text fontSize="md" width="500px" textOverflow="ellipsis" overflow="hidden"
-                                     whiteSpace="nowrap">{image.prompt.text}</Text>
+                                  whiteSpace="nowrap">{image.prompt.text}</Text>
                             <ImageById
                                 prompt_id={image.prompt.id}
                                 style_id={image.style.id}
